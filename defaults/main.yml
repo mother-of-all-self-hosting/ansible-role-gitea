@@ -39,7 +39,7 @@ gitea_config_database_name: gitea
 gitea_config_database_username: ''
 gitea_config_database_password: ''
 
-gite_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
+gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
 
 # gitea_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `roles/custom/gitea/templates/labels.j2` for details.
