@@ -1,0 +1,159 @@
+---
+
+gitea_enabled: true
+
+gitea_version: 1.18.5
+
+gitea_identifier: gitea
+
+gitea_scheme: https
+
+# The fully-qualified name of your Gitea server (e.g. `gitea.example.com`)
+gitea_hostname: ''
+
+gitea_path_prefix: /
+
+gitea_uid: ''
+gitea_gid: ''
+
+gitea_container_image: "{{ gitea_container_image_registry_prefix }}gitea/gitea:{{ gitea_container_image_tag }}"
+gitea_container_image_tag: "{{ gitea_version }}-rootless"
+gitea_container_image_force_pull: "{{ gitea_container_image.endswith(':latest') }}"
+gitea_container_image_registry_prefix: docker.io/
+
+gitea_base_path: "/{{ gitea_identifier }}"
+gitea_data_dir_path: "{{ gitea_base_path }}/data"
+gitea_config_dir_path: "{{ gitea_base_path }}/config"
+
+gitea_ssh_port: 22
+
+gitea_http_bind_port: ''
+gitea_ssh_bind_port: "{{ gitea_ssh_port }}"
+
+gitea_systemd_required_systemd_services_list: ['docker.service']
+
+gitea_config_database_type: postgres
+gitea_config_database_hostname: ''
+gitea_config_database_port: 5432
+gitea_config_database_name: gitea
+gitea_config_database_username: ''
+gitea_config_database_password: ''
+
+gite_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
+
+# gitea_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
+# See `roles/custom/gitea/templates/labels.j2` for details.
+#
+# To inject your own other container labels, see `gitea_container_labels_additional_labels`.
+gitea_container_labels_traefik_enabled: true
+gitea_container_labels_traefik_docker_network: ''
+gitea_container_labels_traefik_hostname: "{{ gitea_hostname }}"
+# The path prefix must either be `/` or not end with a slash (e.g. `/gitea`).
+gitea_container_labels_traefik_path_prefix: "{{ gitea_path_prefix }}"
+gitea_container_labels_traefik_rule: "Host(`{{ gitea_container_labels_traefik_hostname }}`){% if gitea_container_labels_traefik_path_prefix != '/' %} && PathPrefix(`{{ gitea_container_labels_traefik_path_prefix | quote }}`){% endif %}"
+gitea_container_labels_traefik_priority: 0
+gitea_container_labels_traefik_entrypoints: web-secure
+gitea_container_labels_traefik_tls: "{{ gitea_container_labels_traefik_entrypoints != 'web' }}"
+gitea_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+
+# Controls which additional headers to attach to all HTTP requests.
+# To add your own custom request headers, use `gitea_container_labels_traefik_additional_response_headers_custom`
+gitea_container_labels_traefik_additional_request_headers: "{{ gitea_container_labels_traefik_additional_request_headers_auto | combine(gitea_container_labels_traefik_additional_request_headers_custom) }}"
+gitea_container_labels_traefik_additional_request_headers_auto: |
+  {{
+    {}
+    | combine ({'X-Script-Name': gitea_path_prefix} if gitea_path_prefix != '/' else {})
+  }}
+gitea_container_labels_traefik_additional_request_headers_custom: {}
+
+# Controls which additional headers to attach to all HTTP responses.
+# To add your own custom response headers, use `gitea_container_labels_traefik_additional_response_headers_custom`
+gitea_container_labels_traefik_additional_response_headers: "{{ gitea_container_labels_traefik_additional_response_headers_auto | combine(gitea_container_labels_traefik_additional_response_headers_custom) }}"
+gitea_container_labels_traefik_additional_response_headers_auto: |
+  {{
+    {}
+    | combine ({'X-XSS-Protection': gitea_http_header_xss_protection} if gitea_http_header_xss_protection else {})
+    | combine ({'X-Frame-Options': gitea_http_header_frame_options} if gitea_http_header_frame_options else {})
+    | combine ({'X-Content-Type-Options': gitea_http_header_content_type_options} if gitea_http_header_content_type_options else {})
+    | combine ({'Content-Security-Policy': gitea_http_header_content_security_policy} if gitea_http_header_content_security_policy else {})
+    | combine ({'Permission-Policy': gitea_http_header_content_permission_policy} if gitea_http_header_content_permission_policy else {})
+    | combine ({'Strict-Transport-Security': gitea_http_header_strict_transport_security} if gitea_http_header_strict_transport_security and gitea_container_labels_traefik_tls else {})
+  }}
+gitea_container_labels_traefik_additional_response_headers_custom: {}
+
+# gitea_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
+# See `roles/custom/gitea/templates/labels.j2` for details.
+#
+# Example:
+# gitea_container_labels_additional_labels: |
+#   my.label=1
+#   another.label="here"
+gitea_container_labels_additional_labels: ''
+
+# gitea_container_additional_environment_variables contains a multiline string with additional environment variables to pass to the container.
+#
+# Example:
+# gitea_container_additional_environment_variables: |
+#   VAR=1
+#   ANOTHER=value
+gitea_container_additional_environment_variables: ''
+
+gitea_container_network: "{{ gitea_identifier }}"
+
+# A list of additional container networks that the container would be connected to.
+# The playbook does not create these networks, so make sure they already exist.
+gitea_container_additional_networks: []
+
+# Additional environment variables.
+gitea_environment_variables_additional_variables: ''
+
+# Specifies the value of the `X-XSS-Protection` header
+# Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
+#
+# Learn more about it is here:
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+# - https://portswigger.net/web-security/cross-site-scripting/reflected
+gitea_http_header_xss_protection: "1; mode=block"
+
+# Specifies the value of the `X-Frame-Options` header which controls whether framing can happen.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+gitea_http_header_frame_options: SAMEORIGIN
+
+# Specifies the value of the `X-Content-Type-Options` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+gitea_http_header_content_type_options: nosniff
+
+# Specifies the value of the `Content-Security-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+gitea_http_header_content_security_policy: frame-ancestors 'self'
+
+# Specifies the value of the `Permission-Policy` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permission-Policy
+gitea_http_header_content_permission_policy: "{{ 'interest-cohort=()' if gitea_floc_optout_enabled else '' }}"
+
+# Specifies the value of the `Strict-Transport-Security` header.
+# See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+gitea_http_header_strict_transport_security: "max-age=31536000; includeSubDomains{{ '; preload' if gitea_hsts_preload_enabled else '' }}"
+
+# Controls whether to send a "Permissions-Policy interest-cohort=();" header along with all responses
+#
+# Learn more about what it is here:
+# - https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea
+# - https://paramdeo.com/blog/opting-your-website-out-of-googles-floc-network
+# - https://amifloced.org/
+#
+# Of course, a better solution is to just stop using browsers (like Chrome), which participate in such tracking practices.
+# See: `gitea_content_permission_policy`
+gitea_floc_optout_enabled: true
+
+# Controls if HSTS preloading is enabled
+#
+# In its strongest and recommended form, the [HSTS policy](https://www.chromium.org/hsts) includes all subdomains, and
+# indicates a willingness to be "preloaded" into browsers:
+# `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
+# For more information visit:
+# - https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
+# - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+# - https://hstspreload.org/#opt-in
+# See: `gitea_http_header_strict_transport_security`
+gitea_hsts_preload_enabled: false

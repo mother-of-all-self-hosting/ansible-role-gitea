@@ -1,0 +1,52 @@
+[Unit]
+Description=Gitea ({{ gitea_identifier }})
+{% for service in gitea_systemd_required_systemd_services_list %}
+Requires={{ service }}
+After={{ service }}
+{% endfor %}
+DefaultDependencies=no
+
+[Service]
+Type=simple
+Environment="HOME={{ devture_systemd_docker_base_systemd_unit_home_path }}"
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} kill {{ gitea_identifier }} 2>/dev/null'
+ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ gitea_identifier }} 2>/dev/null'
+
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
+			--rm \
+			--name={{ gitea_identifier }} \
+			--log-driver=none \
+			--network={{ gitea_container_network }} \
+			--user={{ gitea_uid }}:{{ gitea_gid }} \
+			--cap-drop=ALL \
+			--read-only \
+			--hostname={{ gitea_hostname }} \
+			{% if gitea_http_bind_port != '' %}
+			-p {{ gitea_http_bind_port }}:3000 \
+			{% endif %}
+			{% if gitea_ssh_bind_port != '' %}
+			-p {{ gitea_ssh_bind_port }}:2222 \
+			{% endif %}
+			--env-file={{ gitea_base_path }}/env \
+			--label-file={{ gitea_base_path }}/labels \
+			--mount type=bind,src={{ gitea_data_dir_path }},dst=/var/lib/gitea \
+			--mount type=bind,src={{ gitea_config_dir_path }},dst=/etc/gitea \
+			--mount type=bind,src=/etc/timezone,dst=/etc/timezone,ro \
+			--mount type=bind,src=/etc/localtime,dst=/etc/localtime,ro \
+			--tmpfs=/tmp:rw,noexec,nosuid,size=128m \
+			{{ gitea_container_image }}
+
+{% for network in gitea_container_additional_networks %}
+ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ gitea_identifier }}
+{% endfor %}
+
+ExecStart={{ devture_systemd_docker_base_host_command_docker }} start --attach {{ gitea_identifier }}
+
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} kill {{ gitea_identifier }} 2>/dev/null'
+ExecStop=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ gitea_identifier }} 2>/dev/null'
+Restart=always
+RestartSec=30
+SyslogIdentifier={{ gitea_identifier }}
+
+[Install]
+WantedBy=multi-user.target

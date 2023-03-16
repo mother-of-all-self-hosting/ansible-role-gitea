@@ -1,0 +1,25 @@
+---
+
+- name: Check existence of Gitea systemd service
+  ansible.builtin.stat:
+    path: "{{ devture_systemd_docker_base_systemd_path }}/{{ gitea_identifier }}.service"
+  register: gitea_service_stat
+
+- when: gitea_service_stat.stat.exists | bool
+  block:
+    - name: Ensure Gitea systemd service is stopped
+      ansible.builtin.service:
+        name: "{{ gitea_identifier }}"
+        state: stopped
+        enabled: false
+        daemon_reload: true
+
+    - name: Ensure Gitea systemd service does not exists
+      ansible.builtin.file:
+        path: "{{ devture_systemd_docker_base_systemd_path }}/{{ gitea_identifier }}.service"
+        state: absent
+
+    - name: Ensure Gitea path doesn't exist
+      ansible.builtin.file:
+        path: "{{ gitea_base_path }}"
+        state: absent
