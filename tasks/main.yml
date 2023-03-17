@@ -1,9 +1,11 @@
 ---
 
 - block:
-    - ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - when: gitea_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
 
-    - ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
+    - when: gitea_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
   tags:
     - setup-all
     - setup-gitea
