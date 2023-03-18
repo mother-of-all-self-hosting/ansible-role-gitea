@@ -31,8 +31,6 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--label-file={{ gitea_base_path }}/labels \
 			--mount type=bind,src={{ gitea_data_dir_path }},dst=/var/lib/gitea \
 			--mount type=bind,src={{ gitea_config_dir_path }},dst=/etc/gitea \
-			--mount type=bind,src=/etc/timezone,dst=/etc/timezone,ro \
-			--mount type=bind,src=/etc/localtime,dst=/etc/localtime,ro \
 			--tmpfs=/tmp:rw,noexec,nosuid,size=128m \
 			{{ gitea_container_image }}
 
