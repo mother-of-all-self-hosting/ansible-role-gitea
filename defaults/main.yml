@@ -2,7 +2,7 @@
 
 gitea_enabled: true
 
-gitea_version: 1.18.5
+gitea_version: 1.19.0
 
 gitea_identifier: gitea
 
@@ -40,6 +40,21 @@ gitea_config_database_username: ''
 gitea_config_database_password: ''
 
 gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
+
+# Controls the RUN_USER configuration setting (`GITEA____RUN_USER` environment variable).
+#
+# This defaults to `git` in the upstream configuration.
+#
+# On startup, Gitea checks if the resolved username for the user it works with matches the RUN_USER.
+#
+# Because we run the container with a custom user (gitea_uid),
+# and not with uid=1000 matching the git user and inside the container,
+# unless we unset this, we'd get an error message:
+# > `Expect user 'git' but current user is: `
+# The relevant check is here: https://github.com/go-gitea/gitea/blob/ccd3a55bf4f07a390e13d48100c58fb937fd3dcf/modules/setting/setting.go#L297-L300C4
+#
+# Unsetting this to an empty string makes it match. Unless you gitea_uid accidentally hits some other user that is part of the container's /etc/passwd file.
+gitea_config_run_user: "{{ 'git' if gitea_uid | string == '1000' else '' }}"
 
 # gitea_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `roles/custom/gitea/templates/labels.j2` for details.
