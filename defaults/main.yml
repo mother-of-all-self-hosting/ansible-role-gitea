@@ -117,7 +117,11 @@ gitea_container_network: "{{ gitea_identifier }}"
 
 # A list of additional container networks that the container would be connected to.
 # The playbook does not create these networks, so make sure they already exist.
-gitea_container_additional_networks: []
+gitea_container_additional_networks: "{{ gitea_container_additional_networks_auto + gitea_container_additional_networks_custom }}"
+# gitea_container_additional_networks_auto is reserved for usage by the playbook.
+# Your custom networks should go into gitea_container_additional_networks_custom.
+gitea_container_additional_networks_auto: []
+gitea_container_additional_networks_custom: []
 
 # Additional environment variables.
 gitea_environment_variables_additional_variables: ''
