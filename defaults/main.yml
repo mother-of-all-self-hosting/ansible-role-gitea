@@ -39,6 +39,14 @@ gitea_config_database_name: gitea
 gitea_config_database_username: ''
 gitea_config_database_password: ''
 
+gitea_config_mailer_enabled: false
+gitea_config_mailer_from: ''
+gitea_config_mailer_protocol: ''
+gitea_config_mailer_smtp_addr: ''
+gitea_config_mailer_smtp_port: 587
+gitea_config_mailer_user: ''
+gitea_config_mailer_passwd: ''
+
 gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
 
 # Controls the RUN_USER configuration setting (`GITEA____RUN_USER` environment variable).
