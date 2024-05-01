@@ -62,7 +62,10 @@ gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_p
 # The relevant check is here: https://github.com/go-gitea/gitea/blob/ccd3a55bf4f07a390e13d48100c58fb937fd3dcf/modules/setting/setting.go#L297-L300C4
 #
 # Unsetting this to an empty string makes it match. Unless you gitea_uid accidentally hits some other user that is part of the container's /etc/passwd file.
-gitea_config_run_user: "{{ 'git' if gitea_uid | string == '1000' else '' }}"
+#
+# That said, it seems like the situation has changed (see https://github.com/mother-of-all-self-hosting/mash-playbook/issues/164)
+# and we always need to set this to git, regardless of whether `gitea_uid` is 1000 or not.
+gitea_config_run_user: git
 
 # gitea_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `roles/custom/gitea/templates/labels.j2` for details.
