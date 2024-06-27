@@ -39,6 +39,12 @@ gitea_config_database_name: gitea
 gitea_config_database_username: ''
 gitea_config_database_password: ''
 
+# Enable this to send e-mail to watchers of a repository when something happens, like creating issues. Requires Mailer to be enabled.
+# See: https://docs.gitea.com/administration/config-cheat-sheet#service-service
+#
+# We enable this by default if the mailer is enabled, because it makes sense use it for more than just transactional emails.
+gitea_config_service_enable_notify_email: "{{ gitea_config_mailer_enabled }}"
+
 gitea_config_mailer_enabled: false
 gitea_config_mailer_from: ''
 gitea_config_mailer_protocol: ''
