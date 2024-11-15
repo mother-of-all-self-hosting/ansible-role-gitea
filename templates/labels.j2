@@ -7,6 +7,10 @@ traefik.docker.network={{ gitea_container_labels_traefik_docker_network }}
 
 {% set middlewares = [] %}
 
+{% if gitea_container_labels_traefik_compression_middleware_enabled %}
+{% set middlewares = middlewares + [gitea_container_labels_traefik_compression_middleware_name] %}
+{% endif %}
+
 {% if gitea_container_labels_traefik_path_prefix != '/' %}
 traefik.http.middlewares.{{ gitea_identifier }}-slashless-redirect.redirectregex.regex=^({{ gitea_container_labels_traefik_path_prefix | quote }})$
 traefik.http.middlewares.{{ gitea_identifier }}-slashless-redirect.redirectregex.replacement=${1}/
