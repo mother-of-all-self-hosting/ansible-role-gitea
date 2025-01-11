@@ -2,7 +2,7 @@
 
 gitea_enabled: true
 
-gitea_version: 1.23.0
+gitea_version: 1.23.1
 
 gitea_identifier: gitea
 
