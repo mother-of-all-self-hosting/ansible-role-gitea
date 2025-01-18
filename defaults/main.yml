@@ -58,6 +58,12 @@ gitea_config_mailer_passwd: ''
 
 gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
 
+# Controls the `GITEA__server__SSH_PORT` environment variable.
+gitea_config_server_ssh_port: "{{ gitea_ssh_port }}"
+
+# Controls the `GITEA__server__SSH_LISTEN_PORT` environment variable.
+gitea_config_server_ssh_listen_port: 2222
+
 # Controls the RUN_USER configuration setting (`GITEA____RUN_USER` environment variable).
 #
 # This defaults to `git` in the upstream configuration.

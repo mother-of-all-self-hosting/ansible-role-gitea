@@ -25,7 +25,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			-p {{ gitea_http_bind_port }}:3000 \
 			{% endif %}
 			{% if gitea_ssh_bind_port != '' %}
-			-p {{ gitea_ssh_bind_port }}:2222 \
+			-p {{ gitea_ssh_bind_port }}:{{ gitea_config_server_ssh_listen_port }} \
 			{% endif %}
 			--env-file={{ gitea_base_path }}/env \
 			--label-file={{ gitea_base_path }}/labels \
