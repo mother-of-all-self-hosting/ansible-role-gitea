@@ -20,7 +20,6 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--user={{ gitea_uid }}:{{ gitea_gid }} \
 			--cap-drop=ALL \
 			--read-only \
-			--hostname={{ gitea_hostname }} \
 			{% if gitea_http_bind_port != '' %}
 			-p {{ gitea_http_bind_port }}:3000 \
 			{% endif %}
