@@ -1,4 +1,8 @@
+# SPDX-FileCopyrightText: 2023 - 2024 Nikita Chernyi
 # SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
+# SPDX-FileCopyrightText: 2025 MASH project contributors
+# SPDX-FileCopyrightText: 2025 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -23,8 +27,10 @@ gitea_gid: ''
 
 gitea_container_image: "{{ gitea_container_image_registry_prefix }}gitea/gitea:{{ gitea_container_image_tag }}"
 gitea_container_image_tag: "{{ gitea_version }}-rootless"
+gitea_container_image_registry_prefix: "{{ gitea_container_image_registry_prefix_upstream }}"
+gitea_container_image_registry_prefix_upstream: "{{ gitea_container_image_registry_prefix_upstream_default }}"
+gitea_container_image_registry_prefix_upstream_default: docker.io/
 gitea_container_image_force_pull: "{{ gitea_container_image.endswith(':latest') }}"
-gitea_container_image_registry_prefix: docker.io/
 
 gitea_base_path: "/{{ gitea_identifier }}"
 gitea_data_dir_path: "{{ gitea_base_path }}/data"
