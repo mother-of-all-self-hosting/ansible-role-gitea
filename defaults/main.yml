@@ -11,10 +11,16 @@
 
 gitea_enabled: true
 
+gitea_identifier: gitea
+gitea_base_path: "/{{ gitea_identifier }}"
+gitea_data_dir_path: "{{ gitea_base_path }}/data"
+gitea_config_dir_path: "{{ gitea_base_path }}/config"
+
 # renovate: datasource=docker depName=gitea/gitea
 gitea_version: 1.23.5
 
-gitea_identifier: gitea
+gitea_uid: ''
+gitea_gid: ''
 
 gitea_scheme: https
 
@@ -23,9 +29,6 @@ gitea_hostname: ''
 
 gitea_path_prefix: /
 
-gitea_uid: ''
-gitea_gid: ''
-
 gitea_container_image: "{{ gitea_container_image_registry_prefix }}gitea/gitea:{{ gitea_container_image_tag }}"
 gitea_container_image_tag: "{{ gitea_version }}-rootless"
 gitea_container_image_registry_prefix: "{{ gitea_container_image_registry_prefix_upstream }}"
@@ -33,66 +36,20 @@ gitea_container_image_registry_prefix_upstream: "{{ gitea_container_image_regist
 gitea_container_image_registry_prefix_upstream_default: docker.io/
 gitea_container_image_force_pull: "{{ gitea_container_image.endswith(':latest') }}"
 
-gitea_base_path: "/{{ gitea_identifier }}"
-gitea_data_dir_path: "{{ gitea_base_path }}/data"
-gitea_config_dir_path: "{{ gitea_base_path }}/config"
-
-gitea_ssh_port: 22
-
 gitea_http_bind_port: ''
 gitea_ssh_bind_port: "{{ gitea_ssh_port }}"
 
-gitea_systemd_required_systemd_services_list: "{{ gitea_systemd_required_systemd_services_list_default + gitea_systemd_required_systemd_services_list_auto + gitea_systemd_required_systemd_services_list_custom }}"
-gitea_systemd_required_systemd_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
-gitea_systemd_required_systemd_services_list_auto: []
-gitea_systemd_required_systemd_services_list_custom: []
+gitea_container_network: "{{ gitea_identifier }}"
 
-gitea_config_database_type: postgres
-gitea_config_database_hostname: ''
-gitea_config_database_port: 5432
-gitea_config_database_name: gitea
-gitea_config_database_username: ''
-gitea_config_database_password: ''
+gitea_ssh_port: 22
 
-# Enable this to send e-mail to watchers of a repository when something happens, like creating issues. Requires Mailer to be enabled.
-# See: https://docs.gitea.com/administration/config-cheat-sheet#service-service
-#
-# We enable this by default if the mailer is enabled, because it makes sense to have it used for more than just transactional emails.
-gitea_config_service_enable_notify_email: "{{ gitea_config_mailer_enabled }}"
-
-gitea_config_mailer_enabled: false
-gitea_config_mailer_from: ''
-gitea_config_mailer_protocol: ''
-gitea_config_mailer_smtp_addr: ''
-gitea_config_mailer_smtp_port: 587
-gitea_config_mailer_user: ''
-gitea_config_mailer_passwd: ''
-
-gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
-
-# Controls the `GITEA__server__SSH_PORT` environment variable.
-gitea_config_server_ssh_port: "{{ gitea_ssh_port }}"
-
-# Controls the `GITEA__server__SSH_LISTEN_PORT` environment variable.
-gitea_config_server_ssh_listen_port: 2222
-
-# Controls the RUN_USER configuration setting (`GITEA____RUN_USER` environment variable).
-#
-# This defaults to `git` in the upstream configuration.
-#
-# On startup, Gitea checks if the resolved username for the user it works with matches the RUN_USER.
-#
-# Because we run the container with a custom user (gitea_uid),
-# and not with uid=1000 matching the git user and inside the container,
-# unless we unset this, we'd get an error message:
-# > `Expect user 'git' but current user is: `
-# The relevant check is here: https://github.com/go-gitea/gitea/blob/ccd3a55bf4f07a390e13d48100c58fb937fd3dcf/modules/setting/setting.go#L297-L300C4
-#
-# Unsetting this to an empty string makes it match. Unless you gitea_uid accidentally hits some other user that is part of the container's /etc/passwd file.
-#
-# That said, it seems like the situation has changed (see https://github.com/mother-of-all-self-hosting/mash-playbook/issues/164)
-# and we always need to set this to git, regardless of whether `gitea_uid` is 1000 or not.
-gitea_config_run_user: git
+# A list of additional container networks that the container would be connected to.
+# The playbook does not create these networks, so make sure they already exist.
+gitea_container_additional_networks: "{{ gitea_container_additional_networks_auto + gitea_container_additional_networks_custom }}"
+# gitea_container_additional_networks_auto is reserved for usage by the playbook.
+# Your custom networks should go into gitea_container_additional_networks_custom.
+gitea_container_additional_networks_auto: []
+gitea_container_additional_networks_custom: []
 
 # gitea_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `roles/custom/gitea/templates/labels.j2` for details.
@@ -147,27 +104,6 @@ gitea_container_labels_traefik_additional_response_headers_custom: {}
 #   another.label="here"
 gitea_container_labels_additional_labels: ''
 
-# gitea_container_additional_environment_variables contains a multiline string with additional environment variables to pass to the container.
-#
-# Example:
-# gitea_container_additional_environment_variables: |
-#   VAR=1
-#   ANOTHER=value
-gitea_container_additional_environment_variables: ''
-
-gitea_container_network: "{{ gitea_identifier }}"
-
-# A list of additional container networks that the container would be connected to.
-# The playbook does not create these networks, so make sure they already exist.
-gitea_container_additional_networks: "{{ gitea_container_additional_networks_auto + gitea_container_additional_networks_custom }}"
-# gitea_container_additional_networks_auto is reserved for usage by the playbook.
-# Your custom networks should go into gitea_container_additional_networks_custom.
-gitea_container_additional_networks_auto: []
-gitea_container_additional_networks_custom: []
-
-# Additional environment variables.
-gitea_environment_variables_additional_variables: ''
-
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
 #
@@ -214,3 +150,66 @@ gitea_floc_optout_enabled: true
 # - https://hstspreload.org/#opt-in
 # See: `gitea_http_header_strict_transport_security`
 gitea_hsts_preload_enabled: false
+
+gitea_systemd_required_systemd_services_list: "{{ gitea_systemd_required_systemd_services_list_default + gitea_systemd_required_systemd_services_list_auto + gitea_systemd_required_systemd_services_list_custom }}"
+gitea_systemd_required_systemd_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
+gitea_systemd_required_systemd_services_list_auto: []
+gitea_systemd_required_systemd_services_list_custom: []
+
+# gitea_container_additional_environment_variables contains a multiline string with additional environment variables to pass to the container.
+#
+# Example:
+# gitea_container_additional_environment_variables: |
+#   VAR=1
+#   ANOTHER=value
+gitea_container_additional_environment_variables: ''
+
+# Additional environment variables.
+gitea_environment_variables_additional_variables: ''
+
+gitea_config_database_type: postgres
+gitea_config_database_hostname: ''
+gitea_config_database_port: 5432
+gitea_config_database_name: gitea
+gitea_config_database_username: ''
+gitea_config_database_password: ''
+
+# Enable this to send e-mail to watchers of a repository when something happens, like creating issues. Requires Mailer to be enabled.
+# See: https://docs.gitea.com/administration/config-cheat-sheet#service-service
+#
+# We enable this by default if the mailer is enabled, because it makes sense to have it used for more than just transactional emails.
+gitea_config_service_enable_notify_email: "{{ gitea_config_mailer_enabled }}"
+
+gitea_config_mailer_enabled: false
+gitea_config_mailer_from: ''
+gitea_config_mailer_protocol: ''
+gitea_config_mailer_smtp_addr: ''
+gitea_config_mailer_smtp_port: 587
+gitea_config_mailer_user: ''
+gitea_config_mailer_passwd: ''
+
+gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
+
+# Controls the `GITEA__server__SSH_PORT` environment variable.
+gitea_config_server_ssh_port: "{{ gitea_ssh_port }}"
+
+# Controls the `GITEA__server__SSH_LISTEN_PORT` environment variable.
+gitea_config_server_ssh_listen_port: 2222
+
+# Controls the RUN_USER configuration setting (`GITEA____RUN_USER` environment variable).
+#
+# This defaults to `git` in the upstream configuration.
+#
+# On startup, Gitea checks if the resolved username for the user it works with matches the RUN_USER.
+#
+# Because we run the container with a custom user (gitea_uid),
+# and not with uid=1000 matching the git user and inside the container,
+# unless we unset this, we'd get an error message:
+# > `Expect user 'git' but current user is: `
+# The relevant check is here: https://github.com/go-gitea/gitea/blob/ccd3a55bf4f07a390e13d48100c58fb937fd3dcf/modules/setting/setting.go#L297-L300C4
+#
+# Unsetting this to an empty string makes it match. Unless you gitea_uid accidentally hits some other user that is part of the container's /etc/passwd file.
+#
+# That said, it seems like the situation has changed (see https://github.com/mother-of-all-self-hosting/mash-playbook/issues/164)
+# and we always need to set this to git, regardless of whether `gitea_uid` is 1000 or not.
+gitea_config_run_user: git
