@@ -15,7 +15,7 @@
     - "{{ gitea_data_dir_path }}"
     - "{{ gitea_config_dir_path }}"
 
-- name: Ensure Gitea support files created
+- name: Ensure Gitea support files installed
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
     dest: "{{ gitea_base_path }}/{{ item }}"
@@ -42,7 +42,7 @@
     name: "{{ gitea_container_network }}"
     driver: bridge
 
-- name: Ensure Gitea systemd service installed
+- name: Ensure Gitea systemd service is present
   ansible.builtin.template:
     src: "{{ role_path }}/templates/gitea.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ gitea_identifier }}.service"
