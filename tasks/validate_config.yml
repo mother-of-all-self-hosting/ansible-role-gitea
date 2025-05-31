@@ -3,22 +3,22 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Fail if required Gitea settings not defined
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item.name }}`) for using this role.
   when: "item.when | bool and vars[item.name] | length == 0"
   with_items:
-    - {'name': 'gitea_hostname', when: true}
-    - {'name': 'gitea_uid', when: true}
-    - {'name': 'gitea_gid', when: true}
-    - {'name': 'gitea_config_database_hostname', when: true}
-    - {'name': 'gitea_config_database_username', when: true}
-    - {'name': 'gitea_config_database_password', when: true}
-    - {'name': 'gitea_container_labels_traefik_compression_middleware_name', when: "{{ gitea_container_labels_traefik_compression_middleware_enabled }}"}
+    - { "name": "gitea_hostname", when: true }
+    - { "name": "gitea_uid", when: true }
+    - { "name": "gitea_gid", when: true }
+    - { "name": "gitea_config_database_hostname", when: true }
+    - { "name": "gitea_config_database_username", when: true }
+    - { "name": "gitea_config_database_password", when: true }
+    - { "name": "gitea_container_labels_traefik_compression_middleware_name", when: "{{ gitea_container_labels_traefik_compression_middleware_enabled }}" }
 
-- when: gitea_container_labels_traefik_enabled | bool
+- name: Run if Traefik is enabled
+  when: gitea_container_labels_traefik_enabled | bool
   block:
     - name: Fail if required Gitea Traefik settings not defined
       ansible.builtin.fail:

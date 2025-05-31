@@ -3,22 +3,25 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
-- block:
-    - when: gitea_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
-
-    - when: gitea_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
+- name: Perform Gitea installation tasks
   tags:
     - setup-all
     - setup-gitea
     - install-all
     - install-gitea
+  block:
+    - name: Validate Gitea configuration
+      when: gitea_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+    - name: Install Gitea
+      when: gitea_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
-- block:
-    - when: not gitea_enabled | bool
-      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
+- name: Perform Gitea uninstallation tasks
   tags:
     - setup-all
     - setup-gitea
+  block:
+    - name: Uninstall Gitea
+      when: not gitea_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"

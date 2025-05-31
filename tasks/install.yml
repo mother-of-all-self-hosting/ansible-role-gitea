@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
-
 - name: Ensure Gitea paths exist
   ansible.builtin.file:
     path: "{{ item }}"
@@ -22,7 +21,7 @@
     dest: "{{ gitea_base_path }}/{{ item }}"
     owner: "{{ gitea_uid }}"
     group: "{{ gitea_gid }}"
-    mode: 0640
+    mode: "0640"
   with_items:
     - env
     - labels
@@ -47,4 +46,4 @@
   ansible.builtin.template:
     src: "{{ role_path }}/templates/gitea.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ gitea_identifier }}.service"
-    mode: 0640
+    mode: "0640"
