@@ -158,6 +158,9 @@ gitea_systemd_required_systemd_services_list_default: "{{ [devture_systemd_docke
 gitea_systemd_required_systemd_services_list_auto: []
 gitea_systemd_required_systemd_services_list_custom: []
 
+# List of systemd services that the Gitea systemd service wants
+gitea_systemd_wanted_services_list: []
+
 # gitea_environment_variables_additional_variables contains a multiline string with additional environment variables to pass to the container.
 #
 # Example:
