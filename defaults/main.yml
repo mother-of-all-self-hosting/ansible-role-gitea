@@ -27,6 +27,7 @@ gitea_scheme: https
 # The fully-qualified name of your Gitea server (e.g. `gitea.example.com`)
 gitea_hostname: ''
 
+# The path at which Gitea is exposed.
 gitea_path_prefix: /
 
 gitea_container_image: "{{ gitea_container_image_registry_prefix }}gitea/gitea:{{ gitea_container_image_tag }}"
@@ -39,20 +40,20 @@ gitea_container_image_force_pull: "{{ gitea_container_image.endswith(':latest') 
 gitea_http_bind_port: ''
 gitea_ssh_bind_port: "{{ gitea_ssh_port }}"
 
+# The base container network. It will be auto-created by this role if it doesn't exist already.
 gitea_container_network: "{{ gitea_identifier }}"
 
 gitea_ssh_port: 22
 
 # A list of additional container networks that the container would be connected to.
-# The playbook does not create these networks, so make sure they already exist.
+# The role does not create these networks, so make sure they already exist.
+# Use this to expose this container to another reverse proxy, which runs in a different container network.
 gitea_container_additional_networks: "{{ gitea_container_additional_networks_auto + gitea_container_additional_networks_custom }}"
-# gitea_container_additional_networks_auto is reserved for usage by the playbook.
-# Your custom networks should go into gitea_container_additional_networks_custom.
 gitea_container_additional_networks_auto: []
 gitea_container_additional_networks_custom: []
 
 # gitea_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
-# See `roles/custom/gitea/templates/labels.j2` for details.
+# See `../templates/labels.j2` for details.
 #
 # To inject your own other container labels, see `gitea_container_labels_additional_labels`.
 gitea_container_labels_traefik_enabled: true
@@ -96,7 +97,7 @@ gitea_container_labels_traefik_additional_response_headers_auto: |
 gitea_container_labels_traefik_additional_response_headers_custom: {}
 
 # gitea_container_labels_additional_labels contains a multiline string with additional labels to add to the container label file.
-# See `roles/custom/gitea/templates/labels.j2` for details.
+# See `../templates/labels.j2` for details.
 #
 # Example:
 # gitea_container_labels_additional_labels: |
@@ -151,6 +152,7 @@ gitea_floc_optout_enabled: true
 # See: `gitea_http_header_strict_transport_security`
 gitea_hsts_preload_enabled: false
 
+# List of systemd services that the Gitea systemd service depends on
 gitea_systemd_required_systemd_services_list: "{{ gitea_systemd_required_systemd_services_list_default + gitea_systemd_required_systemd_services_list_auto + gitea_systemd_required_systemd_services_list_custom }}"
 gitea_systemd_required_systemd_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
 gitea_systemd_required_systemd_services_list_auto: []
