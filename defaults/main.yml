@@ -156,15 +156,12 @@ gitea_systemd_required_systemd_services_list_default: "{{ [devture_systemd_docke
 gitea_systemd_required_systemd_services_list_auto: []
 gitea_systemd_required_systemd_services_list_custom: []
 
-# gitea_container_additional_environment_variables contains a multiline string with additional environment variables to pass to the container.
+# gitea_environment_variables_additional_variables contains a multiline string with additional environment variables to pass to the container.
 #
 # Example:
-# gitea_container_additional_environment_variables: |
+# gitea_environment_variables_additional_variables: |
 #   VAR=1
 #   ANOTHER=value
-gitea_container_additional_environment_variables: ''
-
-# Additional environment variables.
 gitea_environment_variables_additional_variables: ''
 
 gitea_config_database_type: postgres

@@ -3,6 +3,15 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 ---
+- name: (Deprecation) Catch and report renamed settings
+  ansible.builtin.fail:
+    msg: >-
+      Your configuration contains a variable, which now has a different name.
+      Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
+  when: "item.old in vars"
+  with_items:
+    - { "old": "gitea_container_additional_environment_variables", "new": "gitea_environment_variables_additional_variables" }
+
 - name: Fail if required Gitea settings not defined
   ansible.builtin.fail:
     msg: >-
