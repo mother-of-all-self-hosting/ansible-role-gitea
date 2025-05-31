@@ -6,6 +6,7 @@
 
 gitea_enabled: true
 
+# renovate: datasource=docker depName=gitea/gitea
 gitea_version: 1.23.5
 
 gitea_identifier: gitea
