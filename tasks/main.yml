@@ -4,6 +4,7 @@
 
 ---
 - name: Perform Gitea installation tasks
+  when: gitea_enabled | bool
   tags:
     - setup-all
     - setup-gitea
@@ -11,17 +12,15 @@
     - install-gitea
   block:
     - name: Validate Gitea configuration
-      when: gitea_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
     - name: Install Gitea
-      when: gitea_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/install.yml"
 
 - name: Perform Gitea uninstallation tasks
+  when: not gitea_enabled | bool
   tags:
     - setup-all
     - setup-gitea
   block:
     - name: Uninstall Gitea
-      when: not gitea_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/uninstall.yml"
