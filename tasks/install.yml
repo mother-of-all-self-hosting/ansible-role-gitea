@@ -57,21 +57,21 @@
   block:
     - name: Ensure Gitea repository is present on self-build
       ansible.builtin.git:
-        repo: "{{ gitea_container_repo }}"
-        version: "{{ gitea_container_repo_version }}"
-        dest: "{{ gitea_container_src_files_path }}"
+        repo: "{{ gitea_container_image_self_build_repo }}"
+        version: "{{ gitea_container_image_self_build_repo_version }}"
+        dest: "{{ gitea_container_image_self_build_src_files_path }}"
         force: "yes"
       register: gitea_git_pull_results
 
     - name: Ensure Gitea container image is built
       community.docker.docker_image:
-        name: "{{ gitea_container_image_name }}"
+        name: "{{ gitea_container_image_self_build_name }}"
         source: build
         force_source: "{{ gitea_git_pull_results.changed if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
         force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else gitea_git_pull_results.changed }}"
         build:
           dockerfile: Dockerfile
-          path: "{{ gitea_container_src_files_path }}"
+          path: "{{ gitea_container_image_self_build_src_files_path }}"
           pull: true
           args:
 
