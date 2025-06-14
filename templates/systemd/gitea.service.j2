@@ -22,25 +22,25 @@ ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_s
 ExecStartPre=-{{ devture_systemd_docker_base_host_command_sh }} -c '{{ devture_systemd_docker_base_host_command_docker }} rm {{ gitea_identifier }} 2>/dev/null'
 
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
-			--rm \
-			--name={{ gitea_identifier }} \
-			--log-driver=none \
-			--network={{ gitea_container_network }} \
-			--user={{ gitea_uid }}:{{ gitea_gid }} \
-			--cap-drop=ALL \
-			--read-only \
-			{% if gitea_http_bind_port != '' %}
-			-p {{ gitea_http_bind_port }}:3000 \
-			{% endif %}
-			{% if gitea_ssh_bind_port != '' %}
-			-p {{ gitea_ssh_bind_port }}:{{ gitea_config_server_ssh_listen_port }} \
-			{% endif %}
-			--env-file={{ gitea_base_path }}/env \
-			--label-file={{ gitea_base_path }}/labels \
-			--mount type=bind,src={{ gitea_data_dir_path }},dst=/var/lib/gitea \
-			--mount type=bind,src={{ gitea_config_dir_path }},dst=/etc/gitea \
-			--tmpfs=/tmp:rw,noexec,nosuid,size=128m \
-			{{ gitea_container_image_self_build_name if gitea_container_image_self_build else gitea_container_image }}
+      --rm \
+      --name={{ gitea_identifier }} \
+      --log-driver=none \
+      --network={{ gitea_container_network }} \
+      --user={{ gitea_uid }}:{{ gitea_gid }} \
+      --cap-drop=ALL \
+      --read-only \
+      {% if gitea_http_bind_port != '' %}
+      -p {{ gitea_http_bind_port }}:3000 \
+      {% endif %}
+      {% if gitea_ssh_bind_port != '' %}
+      -p {{ gitea_ssh_bind_port }}:{{ gitea_config_server_ssh_listen_port }} \
+      {% endif %}
+      --env-file={{ gitea_base_path }}/env \
+      --label-file={{ gitea_base_path }}/labels \
+      --mount type=bind,src={{ gitea_data_dir_path }},dst=/var/lib/gitea \
+      --mount type=bind,src={{ gitea_config_dir_path }},dst=/etc/gitea \
+      --tmpfs=/tmp:rw,noexec,nosuid,size=128m \
+      {{ gitea_container_image_self_build_name if gitea_container_image_self_build else gitea_container_image }}
 
 {% for network in gitea_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ gitea_identifier }}
