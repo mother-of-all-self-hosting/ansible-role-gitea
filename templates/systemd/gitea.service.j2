@@ -40,7 +40,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
 			--mount type=bind,src={{ gitea_data_dir_path }},dst=/var/lib/gitea \
 			--mount type=bind,src={{ gitea_config_dir_path }},dst=/etc/gitea \
 			--tmpfs=/tmp:rw,noexec,nosuid,size=128m \
-			{{ gitea_container_image }}
+			{{ gitea_container_image_self_build_name if gitea_container_image_self_build else gitea_container_image }}
 
 {% for network in gitea_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ gitea_identifier }}
