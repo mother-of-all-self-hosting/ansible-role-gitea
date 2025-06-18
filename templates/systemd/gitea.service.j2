@@ -30,7 +30,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --cap-drop=ALL \
       --read-only \
       {% if gitea_http_bind_port != '' %}
-      -p {{ gitea_http_bind_port }}:3000 \
+      -p {{ gitea_http_bind_port }}:{{ gitea_container_http_port }} \
       {% endif %}
       {% if gitea_ssh_bind_port != '' %}
       -p {{ gitea_ssh_bind_port }}:{{ gitea_config_server_ssh_listen_port }} \

@@ -49,6 +49,9 @@ gitea_ssh_bind_port: "{{ gitea_ssh_port }}"
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 gitea_container_network: "{{ gitea_identifier }}"
 
+# The port number in the container
+gitea_container_http_port: 3000
+
 gitea_ssh_port: 22
 
 # A list of additional container networks that the container would be connected to.
