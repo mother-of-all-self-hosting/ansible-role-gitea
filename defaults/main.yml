@@ -182,7 +182,7 @@ gitea_database_type: postgres
 gitea_database_hostname: ''
 gitea_database_port: 5432
 gitea_database_name: gitea
-gitea_database_username: ''
+gitea_database_username: gitea
 gitea_database_password: ''
 
 # Enable this to send e-mail to watchers of a repository when something happens, like creating issues. Requires Mailer to be enabled.
