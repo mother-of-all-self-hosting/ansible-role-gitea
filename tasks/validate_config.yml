@@ -10,6 +10,10 @@
       Please change your configuration to rename the variable (`{{ item.old }}` -> `{{ item.new }}`).
   when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
   with_items:
+    - { "old": "gitea_systemd_required_systemd_services_list", "new": "gitea_systemd_required_services_list" }
+    - { "old": "gitea_systemd_required_systemd_services_list_default", "new": "gitea_systemd_required_services_list_default" }
+    - { "old": "gitea_systemd_required_systemd_services_list_auto", "new": "gitea_systemd_required_services_list_auto" }
+    - { "old": "gitea_systemd_required_systemd_services_list_custom", "new": "gitea_systemd_required_services_list_custom" }
     - { "old": "gitea_config_database_type", "new": "gitea_database_type" }
     - { "old": "gitea_config_database_hostname", "new": "gitea_database_hostname" }
     - { "old": "gitea_config_database_port", "new": "gitea_database_port" }

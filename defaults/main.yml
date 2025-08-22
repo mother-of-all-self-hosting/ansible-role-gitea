@@ -162,10 +162,10 @@ gitea_floc_optout_enabled: true
 gitea_hsts_preload_enabled: false
 
 # List of systemd services that the Gitea systemd service depends on
-gitea_systemd_required_systemd_services_list: "{{ gitea_systemd_required_systemd_services_list_default + gitea_systemd_required_systemd_services_list_auto + gitea_systemd_required_systemd_services_list_custom }}"
-gitea_systemd_required_systemd_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
-gitea_systemd_required_systemd_services_list_auto: []
-gitea_systemd_required_systemd_services_list_custom: []
+gitea_systemd_required_services_list: "{{ gitea_systemd_required_services_list_default + gitea_systemd_required_services_list_auto + gitea_systemd_required_services_list_custom }}"
+gitea_systemd_required_services_list_default: "{{ [devture_systemd_docker_base_docker_service_name] if devture_systemd_docker_base_docker_service_name else [] }}"
+gitea_systemd_required_services_list_auto: []
+gitea_systemd_required_services_list_custom: []
 
 # List of systemd services that the Gitea systemd service wants
 gitea_systemd_wanted_services_list: []

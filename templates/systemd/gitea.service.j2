@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 [Unit]
 Description=Gitea ({{ gitea_identifier }})
-{% for service in gitea_systemd_required_systemd_services_list %}
+{% for service in gitea_systemd_required_services_list %}
 Requires={{ service }}
 After={{ service }}
 {% endfor %}
