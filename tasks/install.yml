@@ -13,8 +13,8 @@
     group: "{{ gitea_gid }}"
   with_items:
     - "{{ gitea_base_path }}"
-    - "{{ gitea_data_dir_path }}"
-    - "{{ gitea_config_dir_path }}"
+    - "{{ gitea_data_path }}"
+    - "{{ gitea_config_path }}"
 
 - name: Ensure Gitea support files installed
   ansible.builtin.template:
