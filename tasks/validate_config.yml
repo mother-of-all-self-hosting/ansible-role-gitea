@@ -25,6 +25,7 @@
     - { "old": "gitea_config_database_username", "new": "gitea_database_username" }
     - { "old": "gitea_config_database_password", "new": "gitea_database_password" }
     - { "old": "gitea_container_additional_environment_variables", "new": "gitea_environment_variables_additional_variables" }
+    - { "old": "gitea_http_header_content_permission_policy", "new": "gitea_http_header_permissions_policy" }
 
 - name: Fail if required Gitea settings not defined
   ansible.builtin.fail:
