@@ -210,6 +210,9 @@ gitea_config_server_ssh_port: "{{ gitea_ssh_port }}"
 # Controls the `GITEA__server__SSH_LISTEN_PORT` environment variable.
 gitea_config_server_ssh_listen_port: 2222
 
+# Control if minimum key size with corresponding type is checked
+gitea_config_server_minimum_key_size_check: true
+
 # Controls the RUN_USER configuration setting (`GITEA____RUN_USER` environment variable).
 #
 # This defaults to `git` in the upstream configuration.
