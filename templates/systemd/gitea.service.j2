@@ -1,5 +1,6 @@
 {#
 SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+SPDX-FileCopyrightText: 2025 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 #}
@@ -32,7 +33,7 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% if gitea_http_bind_port != '' %}
       -p {{ gitea_http_bind_port }}:{{ gitea_container_http_port }} \
       {% endif %}
-      {% if gitea_ssh_bind_port != '' %}
+      {% if gitea_ssh_bind_port != '' and not gitea_container_labels_traefik_tcp_enabled %}
       -p {{ gitea_ssh_bind_port }}:{{ gitea_config_server_ssh_listen_port }} \
       {% endif %}
       --env-file={{ gitea_base_path }}/env \

@@ -1,15 +1,18 @@
 {#
 SPDX-FileCopyrightText: 2023 Slavi Pantaleev
+SPDX-FileCopyrightText: 2025 Suguru Hirahara
 
 SPDX-License-Identifier: AGPL-3.0-or-later
 #}
 
-{% if gitea_container_labels_traefik_enabled %}
+{% if gitea_container_labels_traefik_enabled or gitea_container_labels_traefik_tcp_enabled %}
 traefik.enable=true
 
 {% if gitea_container_labels_traefik_docker_network %}
 traefik.docker.network={{ gitea_container_labels_traefik_docker_network }}
 {% endif %}
+
+{% if gitea_container_labels_traefik_enabled %}
 
 {% set middlewares = [] %}
 
@@ -57,6 +60,21 @@ traefik.http.routers.{{ gitea_identifier }}.tls.certResolver={{ gitea_container_
 {% endif %}
 
 traefik.http.services.{{ gitea_identifier }}.loadbalancer.server.port={{ gitea_container_http_port }}
+{% endif %}
+
+{% endif %}
+
+{% if gitea_container_labels_traefik_tcp_enabled and gitea_ssh_bind_port %}
+
+traefik.tcp.routers.{{ gitea_identifier }}.rule={{ gitea_container_labels_traefik_tcp_rule }}
+{% if gitea_container_labels_traefik_tcp_priority | int > 0 %}
+traefik.tcp.routers.{{ gitea_identifier }}.priority={{ gitea_container_labels_traefik_tcp_priority }}
+{% endif %}
+traefik.tcp.routers.{{ gitea_identifier }}.service={{ gitea_identifier }}
+traefik.tcp.routers.{{ gitea_identifier }}.entrypoints={{ gitea_container_labels_traefik_tcp_entrypoints }}
+
+traefik.tcp.services.{{ gitea_identifier }}.loadbalancer.server.port={{ gitea_config_server_ssh_listen_port }}
+
 {% endif %}
 
 {{ gitea_container_labels_additional_labels }}
