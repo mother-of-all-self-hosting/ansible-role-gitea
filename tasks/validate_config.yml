@@ -33,9 +33,10 @@
       You need to define a required configuration setting (`{{ item.name }}`) for using this role.
   when: "item.when | bool and lookup('vars', item.name, default='') | string | length == 0"
   with_items:
-    - { "name": "gitea_hostname", when: true }
     - { "name": "gitea_uid", when: true }
     - { "name": "gitea_gid", when: true }
+    - { "name": "gitea_hostname", when: true }
+    - { "name": "gitea_path_prefix", when: true }
     - { "name": "gitea_database_hostname", when: true }
     - { "name": "gitea_database_username", when: true }
     - { "name": "gitea_database_password", when: true }
