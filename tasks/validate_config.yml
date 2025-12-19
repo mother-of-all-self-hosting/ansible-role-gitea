@@ -37,6 +37,7 @@
     - { "name": "gitea_gid", when: true }
     - { "name": "gitea_hostname", when: true }
     - { "name": "gitea_path_prefix", when: true }
+    - { "name": "gitea_container_network", when: true }
     - { "name": "gitea_database_hostname", when: true }
     - { "name": "gitea_database_username", when: true }
     - { "name": "gitea_database_password", when: true }
