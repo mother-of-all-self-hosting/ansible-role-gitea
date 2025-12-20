@@ -122,7 +122,9 @@ gitea_container_labels_traefik_additional_response_headers_custom: {}
 # gitea_container_labels_additional_labels: |
 #   my.label=1
 #   another.label="here"
-gitea_container_labels_additional_labels: ''
+gitea_container_labels_additional_labels: "{{ gitea_container_labels_additional_labels_auto | combine(gitea_container_labels_additional_labels_custom) }}"
+gitea_container_labels_additional_labels_auto: {}
+gitea_container_labels_additional_labels_custom: {}
 
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
