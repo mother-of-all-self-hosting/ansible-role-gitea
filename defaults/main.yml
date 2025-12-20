@@ -183,14 +183,6 @@ gitea_systemd_wanted_services_list_default: []
 gitea_systemd_wanted_services_list_auto: []
 gitea_systemd_wanted_services_list_custom: []
 
-# gitea_environment_variables_additional_variables contains a multiline string with additional environment variables to pass to the container.
-#
-# Example:
-# gitea_environment_variables_additional_variables: |
-#   VAR=1
-#   ANOTHER=value
-gitea_environment_variables_additional_variables: ''
-
 gitea_database_type: postgres
 gitea_database_hostname: ''
 gitea_database_port: 5432
@@ -240,3 +232,14 @@ gitea_config_server_minimum_key_size_check: true
 # That said, it seems like the situation has changed (see https://github.com/mother-of-all-self-hosting/mash-playbook/issues/164)
 # and we always need to set this to git, regardless of whether `gitea_uid` is 1000 or not.
 gitea_config_run_user: git
+
+# Specify the timezone
+gitea_environment_variables_tz: UTC
+
+# gitea_environment_variables_additional_variables contains a multiline string with additional environment variables to pass to the container.
+#
+# Example:
+# gitea_environment_variables_additional_variables: |
+#   VAR=1
+#   ANOTHER=value
+gitea_environment_variables_additional_variables: ''
