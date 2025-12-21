@@ -24,10 +24,10 @@ gitea_gid: ""
 
 gitea_scheme: https
 
-# The fully-qualified name of your Gitea server (e.g. `gitea.example.com`)
+# The hostname at which Gitea is served.
 gitea_hostname: ""
 
-# The path at which Gitea is exposed.
+# The path at which Gitea is served.
 gitea_path_prefix: /
 
 gitea_container_image: "{{ gitea_container_image_registry_prefix }}gitea/gitea:{{ gitea_container_image_tag }}"
