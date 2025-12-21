@@ -127,6 +127,11 @@ gitea_container_labels_additional_labels: "{{ gitea_container_labels_additional_
 gitea_container_labels_additional_labels_auto: {}
 gitea_container_labels_additional_labels_custom: {}
 
+# A list of extra arguments to pass to the container (`docker create` command)
+gitea_container_extra_arguments: "{{ gitea_container_extra_arguments_auto + gitea_container_extra_arguments_custom }}"
+gitea_container_extra_arguments_auto: []
+gitea_container_extra_arguments_custom: []
+
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
 #
