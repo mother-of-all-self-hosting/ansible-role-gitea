@@ -19,13 +19,13 @@ gitea_config_path: "{{ gitea_base_path }}/config"
 # renovate: datasource=docker depName=gitea/gitea
 gitea_version: 1.25.3
 
-gitea_uid: ''
-gitea_gid: ''
+gitea_uid: ""
+gitea_gid: ""
 
 gitea_scheme: https
 
 # The fully-qualified name of your Gitea server (e.g. `gitea.example.com`)
-gitea_hostname: ''
+gitea_hostname: ""
 
 # The path at which Gitea is exposed.
 gitea_path_prefix: /
@@ -43,7 +43,7 @@ gitea_container_image_self_build_repo: "https://github.com/go-gitea/gitea.git"
 gitea_container_image_self_build_repo_version: "{{ 'v' + gitea_version if gitea_version != 'latest' else 'main' }}"
 gitea_container_image_self_build_src_files_path: "{{ gitea_base_path }}/docker-src"
 
-gitea_http_bind_port: ''
+gitea_http_bind_port: ""
 gitea_ssh_bind_port: "{{ gitea_ssh_port }}"
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
@@ -66,7 +66,7 @@ gitea_container_additional_networks_custom: []
 #
 # To inject your own other container labels, see `gitea_container_labels_additional_labels`.
 gitea_container_labels_traefik_enabled: true
-gitea_container_labels_traefik_docker_network: ''
+gitea_container_labels_traefik_docker_network: ""
 gitea_container_labels_traefik_hostname: "{{ gitea_hostname }}"
 # The path prefix must either be `/` or not end with a slash (e.g. `/gitea`).
 gitea_container_labels_traefik_path_prefix: "{{ gitea_path_prefix }}"
@@ -192,11 +192,11 @@ gitea_systemd_wanted_services_list_auto: []
 gitea_systemd_wanted_services_list_custom: []
 
 gitea_database_type: postgres
-gitea_database_hostname: ''
+gitea_database_hostname: ""
 gitea_database_port: 5432
 gitea_database_name: gitea
 gitea_database_username: gitea
-gitea_database_password: ''
+gitea_database_password: ""
 
 # Enable this to send e-mail to watchers of a repository when something happens, like creating issues. Requires Mailer to be enabled.
 # See: https://docs.gitea.com/administration/config-cheat-sheet#service-service
@@ -205,12 +205,12 @@ gitea_database_password: ''
 gitea_config_service_enable_notify_email: "{{ gitea_config_mailer_enabled }}"
 
 gitea_config_mailer_enabled: false
-gitea_config_mailer_from: ''
-gitea_config_mailer_protocol: ''
-gitea_config_mailer_smtp_addr: ''
+gitea_config_mailer_from: ""
+gitea_config_mailer_protocol: ""
+gitea_config_mailer_smtp_addr: ""
 gitea_config_mailer_smtp_port: 587
-gitea_config_mailer_user: ''
-gitea_config_mailer_passwd: ''
+gitea_config_mailer_user: ""
+gitea_config_mailer_passwd: ""
 
 gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
 
@@ -250,4 +250,4 @@ gitea_environment_variables_tz: UTC
 # gitea_environment_variables_additional_variables: |
 #   VAR=1
 #   ANOTHER=value
-gitea_environment_variables_additional_variables: ''
+gitea_environment_variables_additional_variables: ""
