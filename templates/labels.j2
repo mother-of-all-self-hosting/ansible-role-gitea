@@ -64,7 +64,7 @@ traefik.http.services.{{ gitea_identifier }}.loadbalancer.server.port={{ gitea_c
 
 {% endif %}
 
-{% if gitea_container_labels_traefik_tcp_enabled and gitea_ssh_bind_port %}
+{% if gitea_container_labels_traefik_tcp_enabled and gitea_container_ssh_host_bind_port %}
 
 traefik.tcp.routers.{{ gitea_identifier }}.rule={{ gitea_container_labels_traefik_tcp_rule }}
 {% if gitea_container_labels_traefik_tcp_priority | int > 0 %}
