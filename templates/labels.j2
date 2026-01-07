@@ -77,4 +77,6 @@ traefik.tcp.services.{{ gitea_identifier }}.loadbalancer.server.port={{ gitea_co
 
 {% endif %}
 
-{{ gitea_container_labels_additional_labels }}
+{% for arg in gitea_container_labels_additional_labels %}
+{{ arg }}
+{% endfor %}

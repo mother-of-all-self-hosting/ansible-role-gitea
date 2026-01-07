@@ -129,11 +129,11 @@ gitea_container_labels_traefik_additional_response_headers_custom: {}
 #
 # Example:
 # gitea_container_labels_additional_labels_custom: |
-#   my.label=1
-#   another.label="here"
-gitea_container_labels_additional_labels: "{{ gitea_container_labels_additional_labels_auto | combine(gitea_container_labels_additional_labels_custom) }}"
-gitea_container_labels_additional_labels_auto: {}
-gitea_container_labels_additional_labels_custom: {}
+#   - my.label=1
+#   - another.label="here"
+gitea_container_labels_additional_labels: "{{ gitea_container_labels_additional_labels_auto + gitea_container_labels_additional_labels_custom }}"
+gitea_container_labels_additional_labels_auto: []
+gitea_container_labels_additional_labels_custom: []
 
 # A list of extra arguments to pass to the container (`docker create` command)
 gitea_container_extra_arguments: "{{ gitea_container_extra_arguments_auto + gitea_container_extra_arguments_custom }}"
