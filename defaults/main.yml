@@ -128,7 +128,7 @@ gitea_container_labels_traefik_additional_response_headers_custom: {}
 # To add your own custom labels, use `gitea_container_labels_additional_labels_custom`
 #
 # Example:
-# gitea_container_labels_additional_labels_custom: |
+# gitea_container_labels_additional_labels_custom:
 #   - my.label=1
 #   - another.label="here"
 gitea_container_labels_additional_labels: "{{ gitea_container_labels_additional_labels_auto + gitea_container_labels_additional_labels_custom }}"
