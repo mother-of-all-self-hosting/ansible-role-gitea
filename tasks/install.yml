@@ -20,9 +20,9 @@
   ansible.builtin.template:
     src: "{{ role_path }}/templates/{{ item }}.j2"
     dest: "{{ gitea_base_path }}/{{ item }}"
+    mode: "0640"
     owner: "{{ gitea_uid }}"
     group: "{{ gitea_gid }}"
-    mode: "0640"
   with_items:
     - env
     - labels
