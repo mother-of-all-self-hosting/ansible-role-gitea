@@ -72,7 +72,7 @@ gitea_container_additional_networks_custom: []
 # gitea_container_labels_traefik_enabled controls whether labels to assist a Traefik reverse-proxy will be attached to the container.
 # See `../templates/labels.j2` for details.
 #
-# To inject your own other container labels, see `gitea_container_labels_additional_labels`.
+# To inject your own other container labels, see `gitea_container_labels_additional_labels_custom`.
 gitea_container_labels_traefik_enabled: true
 gitea_container_labels_traefik_docker_network: ""
 gitea_container_labels_traefik_hostname: "{{ gitea_hostname }}"
@@ -87,7 +87,7 @@ gitea_container_labels_traefik_tls_certResolver: default  # noqa var-naming
 # gitea_container_labels_traefik_tcp_enabled controls whether labels to assist a Traefik reverse-proxy for SSH connections will be attached to the container.
 # See `../templates/labels.j2` for details.
 #
-# To inject your own other container labels, see `gitea_container_labels_additional_labels`.
+# To inject your own other container labels, see `gitea_container_labels_additional_labels_custom`.
 gitea_container_labels_traefik_tcp_enabled: true
 gitea_container_labels_traefik_tcp_docker_network: "{{ gitea_container_network }}"
 gitea_container_labels_traefik_tcp_rule: "HostSNI(`*`)"
