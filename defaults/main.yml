@@ -22,6 +22,7 @@ gitea_version: 1.25.3
 gitea_uid: ""
 gitea_gid: ""
 
+# The scheme used for serving Gitea.
 gitea_scheme: https
 
 # The hostname at which Gitea is served.
