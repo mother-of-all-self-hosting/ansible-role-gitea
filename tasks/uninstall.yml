@@ -24,21 +24,24 @@
         path: "{{ devture_systemd_docker_base_systemd_path }}/{{ gitea_identifier }}.service"
         state: absent
 
-    - name: Ensure Gitea container network does not exist via community.docker.docker_network
-      when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
-      community.docker.docker_network:
-        name: "{{ gitea_container_network }}"
-        state: absent
-      register: gitea_network_deletion_result
+    - name: Ensure Gitea container network does not exist
+      when: gitea_container_network_deletion_enabled
+      block:
+        - name: Ensure Gitea container network does not exist via community.docker.docker_network
+          when: devture_systemd_docker_base_container_network_creation_method == 'ansible-module'
+          community.docker.docker_network:
+            name: "{{ gitea_container_network }}"
+            state: absent
+          register: gitea_network_deletion_result
 
-    - name: Ensure Gitea container network does not exist via ansible.builtin.command
-      when: devture_systemd_docker_base_container_network_creation_method == 'command'
-      ansible.builtin.command:
-        cmd: >-
-          {{ devture_systemd_docker_base_host_command_docker }} network rm
-          {{ gitea_container_network }}
-      register: gitea_network_deletion_result
-      changed_when: gitea_container_network in gitea_network_deletion_result.stdout
+        - name: Ensure Gitea container network does not exist via ansible.builtin.command
+          when: devture_systemd_docker_base_container_network_creation_method == 'command'
+          ansible.builtin.command:
+            cmd: >-
+              {{ devture_systemd_docker_base_host_command_docker }} network rm
+              {{ gitea_container_network }}
+          register: gitea_network_deletion_result
+          changed_when: gitea_container_network in gitea_network_deletion_result.stdout
 
     - name: Ensure Gitea path does not exist
       ansible.builtin.file:
