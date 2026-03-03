@@ -26,6 +26,7 @@
   with_items:
     - env
     - labels
+  register: gitea_support_files_result
 
 - name: Run if self-building of Gitea container image is not enabled
   when: "not gitea_container_image_self_build | bool"
@@ -37,20 +38,20 @@
         source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
         force_source: "{{ gitea_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
         force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else gitea_container_image_force_pull }}"
-      register: result
+      register: gitea_container_image_pull_result
       retries: "{{ devture_playbook_help_container_retries_count }}"
       delay: "{{ devture_playbook_help_container_retries_delay }}"
-      until: result is not failed
+      until: gitea_container_image_pull_result is not failed
 
     - name: Ensure Gitea container image is pulled via ansible.builtin.command
       when: devture_systemd_docker_base_container_image_pull_method == 'command'
       ansible.builtin.command:
         cmd: "{{ devture_systemd_docker_base_host_command_docker }} pull {{ gitea_container_image }}"
-      register: result
+      register: gitea_container_image_pull_result
       retries: "{{ devture_playbook_help_container_retries_count }}"
       delay: "{{ devture_playbook_help_container_retries_delay }}"
-      until: result is not failed
-      changed_when: "'Downloaded newer image' in result.stdout"
+      until: gitea_container_image_pull_result is not failed
+      changed_when: "'Downloaded newer image' in gitea_container_image_pull_result.stdout"
 
 - name: Run if self-building of Gitea container image is enabled
   when: "gitea_container_image_self_build | bool"
@@ -102,3 +103,14 @@
     src: "{{ role_path }}/templates/systemd/gitea.service.j2"
     dest: "{{ devture_systemd_docker_base_systemd_path }}/{{ gitea_identifier }}.service"
     mode: "0644"
+  register: gitea_systemd_service_result
+
+- name: Determine whether Gitea needs a restart
+  ansible.builtin.set_fact:
+    gitea_restart_necessary: >-
+      {{
+        gitea_support_files_result.changed | default(false)
+        or gitea_systemd_service_result.changed | default(false)
+        or gitea_container_image_pull_result.changed | default(false)
+        or gitea_container_image_build_result.changed | default(false)
+      }}
