@@ -64,6 +64,20 @@ gitea_hostname: "example.com"
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
+### Specify database
+
+It is necessary to select database used by Gitea from a MySQL compatible database, Postgres, and SQLite.
+
+To use Postgres, add the following configuration to your `vars.yml` file:
+
+```yaml
+gitea_database_type: postgres
+```
+
+Set `mysql` to use a MySQL compatible database, and `sqlite` to use SQLite. The SQLite database is stored in the directory specified with `gitea_data_path`.
+
+For other settings, check variables such as `gitea_database_*` on [`defaults/main.yml`](../defaults/main.yml).
+
 ### Configure SSH port for Gitea (optional)
 
 Gitea uses port 22 for its SSH feature by default.
