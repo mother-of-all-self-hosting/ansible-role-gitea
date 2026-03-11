@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2023 - 2024 Nikita Chernyi
-# SPDX-FileCopyrightText: 2023 - 2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2023, 2024 Nikita Chernyi
+# SPDX-FileCopyrightText: 2023-2025 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
 # SPDX-FileCopyrightText: 2025 MASH project contributors
-# SPDX-FileCopyrightText: 2025 Suguru Hirahara
+# SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -237,12 +237,20 @@ gitea_container_cleanup_command: |
   echo "Failed to remove stale container {{ gitea_identifier }} after {{ gitea_container_cleanup_timeout_seconds }} attempts" >&2;
   exit 1
 
-gitea_database_type: postgres
-gitea_database_hostname: ""
-gitea_database_port: 5432
+# Specify database to use
+# Valid values: mysql, postgres, sqlite
+gitea_database_type: ""
+
+gitea_database_mysql_hostname: ""
+gitea_database_mysql_port: 3306
+gitea_database_mysql_username: gitea
+gitea_database_mysql_password: ""
+gitea_database_postgres_hostname: ""
+gitea_database_postgres_port: 5432
+gitea_database_postgres_username: gitea
+gitea_database_postgres_password: ""
+
 gitea_database_name: gitea
-gitea_database_username: gitea
-gitea_database_password: ""
 
 # Enable this to send e-mail to watchers of a repository when something happens, like creating issues. Requires Mailer to be enabled.
 # See: https://docs.gitea.com/administration/config-cheat-sheet#service-service
