@@ -50,6 +50,12 @@
     - "name": "gitea_container_labels_traefik_compression_middleware_name"
       when: "{{ gitea_container_labels_traefik_compression_middleware_enabled }}"
 
+- name: Fail if Gitea cache adapter type is invalid
+  ansible.builtin.fail:
+    msg: >-
+      gitea_config_cache_adapter must be 'memcache', 'memory', 'redis', 'redis-cluster', or 'twoqueue'
+  when: "gitea_config_cache_adapter not in ['memcache', 'memory', 'redis', 'redis-cluster', 'twoqueue']"
+
 - name: Fail if Gitea database type invalid
   ansible.builtin.fail:
     msg: >-

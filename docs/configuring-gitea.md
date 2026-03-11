@@ -76,6 +76,42 @@ If you wish to have the instance listen to another port, add the following confi
 gitea_container_ssh_port: 222
 ```
 
+### Configuring cache (optional)
+
+Gitea uses caching to avoid repeating expensive operations. By default the internal memory (`memory`) is enabled for it, but you can use a specific cache adapter by adding the following configuration to your `vars.yml` file (adapt to your needs):
+
+```yaml
+# Valid values: memcache, memory, redis, redis-cluster, twoqueue
+gitea_config_cache_adapter: ""
+```
+
+#### Configuration for `redis` and `redis-cluster`
+
+If `redis` or `redis-cluster` is set to `gitea_config_cache_adapter`, you can set the connection string by adding the following configuration to your `vars.yml` file:
+
+```yaml
+gitea_redis_hostname: YOUR_REDIS_SERVER_HOSTNAME_HERE
+gitea_redis_port: 6379
+gitea_redis_password: YOUR_REDIS_SERVER_PASSWORD_HERE
+gitea_redis_database: 0
+```
+
+Make sure to replace `YOUR_REDIS_SERVER_HOSTNAME_HERE` and `YOUR_REDIS_SERVER_PASSWORD_HERE` with your own values.
+
+If you are looking for an Ansible role for Redis, you can check out [ansible-role-redis](https://github.com/mother-of-all-self-hosting/ansible-role-redis) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team. The roles for [KeyDB](https://keydb.dev/) ([ansible-role-keydb](https://github.com/mother-of-all-self-hosting/ansible-role-keydb)) and [Valkey](https://valkey.io/) ([ansible-role-valkey](https://github.com/mother-of-all-self-hosting/ansible-role-valkey)) are available as well.
+
+#### Configuration for `memcache` and `twoqueue`
+
+If `memcache` or `twoqueue` is set to `gitea_config_cache_adapter`, you can set the connection string by adding the following configuration to your `vars.yml` file:
+
+```yaml
+gitea_config_cache_host: CONNECTION_STRING_HERE
+```
+
+See [this section](https://docs.gitea.com/administration/config-cheat-sheet#cache-cache) on the official documentation for details.
+
+If you are looking for an Ansible role for [Memcached](https://memcached.org), you can check out [ansible-role-memcache](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3Az2arPcue4GZ6G6FY3gZexsJXqHyDs) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the service.
