@@ -237,10 +237,11 @@ gitea_container_cleanup_command: |
   echo "Failed to remove stale container {{ gitea_identifier }} after {{ gitea_container_cleanup_timeout_seconds }} attempts" >&2;
   exit 1
 
-# Specify database to use
+# Specify a database driver to use
 # Valid values: mysql, postgres, sqlite
 gitea_database_type: ""
 
+# Specify database configuration
 gitea_database_mysql_hostname: ""
 gitea_database_mysql_port: 3306
 gitea_database_mysql_username: gitea
@@ -249,7 +250,14 @@ gitea_database_postgres_hostname: ""
 gitea_database_postgres_port: 5432
 gitea_database_postgres_username: gitea
 gitea_database_postgres_password: ""
-
+# Specify SSL mode for MySQL database server
+# By default, we expect a local container (without SSL), so attempting SSL connections is not necessary.
+# Valid values: see https://docs.gitea.com/administration/config-cheat-sheet#database-database
+gitea_database_mysql_sslmode: disable
+# Specify SSL mode for Postgres database server
+# By default, we expect a local container (without SSL), so attempting SSL connections is not necessary.
+# Valid values: see https://docs.gitea.com/administration/config-cheat-sheet#database-database
+gitea_database_postgres_sslmode: disable
 gitea_database_name: gitea
 
 gitea_redis_hostname: ""
