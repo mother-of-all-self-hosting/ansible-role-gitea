@@ -266,6 +266,14 @@ gitea_redis_username: ""
 gitea_redis_password: ""
 gitea_redis_database: 0
 
+# Specify issue indexer type
+# Valid values: bleve, db, elasticsearch, meilisearch
+gitea_environment_variables_indexer_issue_indexer_type: bleve
+
+# Specify issue indexer connection string
+# Available when gitea_environment_variables_indexer_issue_indexer_type is `elasticsearch` or `meilisearch`
+gitea_environment_variables_indexer_issue_indexer_conn_str: ""
+
 # Specify cache adapter
 # Valid values: memcache, memory, redis, redis-cluster, twoqueue
 # See: https://docs.gitea.com/administration/config-cheat-sheet#cache-cache
