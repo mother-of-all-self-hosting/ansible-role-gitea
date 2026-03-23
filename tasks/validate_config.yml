@@ -76,10 +76,11 @@
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item }}`) when `gitea_database_type` is `postgres`
-  when: "gitea_database_type == 'postgres' and lookup('vars', item, default='') | string | length == 0"
+  when: "gitea_database_type == 'postgres' and item.when | bool and lookup('vars', item.name, default='') | string | length == 0"
   with_items:
-    - gitea_database_postgres_hostname
-    - gitea_database_postgres_password
+    - { "name": "gitea_database_postgres_socket_path_host", when: "{{ gitea_database_postgres_socket_enabled }}" }
+    - { "name": "gitea_database_postgres_hostname", when: "{{ not gitea_database_postgres_socket_enabled }}" }
+    - { "name": "gitea_database_postgres_password", when: true }
 
 - name: Fail if SMTP settings are missing (and SMTP is enabled by setting host)
   ansible.builtin.fail:
