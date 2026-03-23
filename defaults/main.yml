@@ -284,6 +284,10 @@ gitea_database_postgres_socket_path_container: /run-postgres
 # Specify the path to the Postgres Unix socket path on the host (bind-mount source)
 gitea_database_postgres_socket_path_host: ""
 
+# Specify database host address and port or absolute path for Unix socket
+gitea_config_database_host_mysql: "{{ gitea_database_mysql_socket_path_container + '/mysqld.sock' if gitea_database_mysql_socket_enabled else gitea_database_mysql_hostname + ':' + gitea_database_mysql_port }}"
+gitea_config_database_host_postgres: "{{ gitea_database_postgres_socket_path_container if gitea_database_postgres_socket_enabled else gitea_database_postgres_hostname + ':' + gitea_database_postgres_port }}"
+
 ########################################################################
 #                                                                      #
 # /database                                                            #
@@ -332,10 +336,6 @@ gitea_config_server_ssh_listen_port: 4381 # Random number to avoid collision
 
 # Control if minimum key size with corresponding type is checked
 gitea_config_server_minimum_key_size_check: true
-
-# Specify database host address and port or absolute path for Unix socket
-gitea_config_database_host_mysql: "{{ gitea_database_mysql_hostname }}:{{ gitea_database_mysql_port }}"
-gitea_config_database_host_postgres: "{{ gitea_database_postgres_hostname }}:{{ gitea_database_postgres_port }}"
 
 # Controls the RUN_USER configuration setting (`GITEA____RUN_USER` environment variable).
 #
