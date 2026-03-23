@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2023, 2024 Nikita Chernyi
-# SPDX-FileCopyrightText: 2023-2025 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2023-2026 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
 # SPDX-FileCopyrightText: 2025 MASH project contributors
 # SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
@@ -237,6 +237,12 @@ gitea_container_cleanup_command: |
   echo "Failed to remove stale container {{ gitea_identifier }} after {{ gitea_container_cleanup_timeout_seconds }} attempts" >&2;
   exit 1
 
+########################################################################
+#                                                                      #
+# database                                                             #
+#                                                                      #
+########################################################################
+
 # Specify a database driver to use
 # Valid values: mysql, postgres, sqlite
 gitea_database_type: ""
@@ -259,6 +265,21 @@ gitea_database_mysql_sslmode: disable
 # Valid values: see https://docs.gitea.com/administration/config-cheat-sheet#database-database
 gitea_database_postgres_sslmode: disable
 gitea_database_name: gitea
+
+# Control if the database connection to MySQL is made via a Unix socket
+gitea_database_mysql_socket_enabled: false
+
+# Specify the path to the MySQL Unix socket path inside the Gitea container
+gitea_database_mysql_socket_path_container: /run-mysqld
+
+# Specify the path to the MySQL Unix socket path on the host (bind-mount source)
+gitea_database_mysql_socket_path_host: ""
+
+########################################################################
+#                                                                      #
+# /database                                                            #
+#                                                                      #
+########################################################################
 
 gitea_redis_hostname: ""
 gitea_redis_port: 6379

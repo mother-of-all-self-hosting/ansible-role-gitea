@@ -66,10 +66,11 @@
   ansible.builtin.fail:
     msg: >-
       You need to define a required configuration setting (`{{ item }}`) when `gitea_database_type` is `mysql`
-  when: "gitea_database_type == 'mysql' and lookup('vars', item, default='') | string | length == 0"
+  when: "gitea_database_type == 'mysql' and item.when | bool and lookup('vars', item.name, default='') | string | length == 0"
   with_items:
-    - gitea_database_mysql_hostname
-    - gitea_database_mysql_password
+    - { "name": "gitea_database_mysql_socket_path_host", when: "{{ gitea_database_mysql_socket_enabled }}" }
+    - { "name": "gitea_database_mysql_hostname", when: "{{ not gitea_database_mysql_socket_enabled }}" }
+    - { "name": "gitea_database_mysql_password", when: true }
 
 - name: Fail if required Gitea + Postgres integration settings not defined
   ansible.builtin.fail:
