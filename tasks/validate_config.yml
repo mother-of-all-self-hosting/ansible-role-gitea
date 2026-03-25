@@ -62,61 +62,63 @@
       gitea_database_type must be 'mysql', 'postgres' or 'sqlite'
   when: "gitea_database_type not in ['mysql', 'postgres', 'sqlite']"
 
-- name: Fail if required Gitea + MySQL integration settings not defined
-  ansible.builtin.fail:
-    msg: >-
-      You need to define a required configuration setting (`{{ item }}`) when `gitea_database_type` is `mysql`
-  when: "gitea_database_type == 'mysql' and lookup('vars', item, default='') | string | length == 0"
-  with_items:
-    - gitea_database_mysql_password
+- name: Run if Gitea + MySQL integration is enabled
+  when: gitea_database_type == 'mysql'
+  block:
+    - name: Fail if required Gitea + MySQL integration settings not defined
+      ansible.builtin.fail:
+        msg: >-
+          You need to define a required configuration setting (`{{ item }}`) when `gitea_database_type` is `mysql`
+      when: "lookup('vars', item, default='') | string | length == 0"
+      with_items:
+        - gitea_database_mysql_password
 
-- name: Fail if MySQL socket host path is missing when Unix socket is enabled
-  ansible.builtin.fail:
-    msg: >-
-      You need to define `gitea_database_mysql_socket_path_host` when `gitea_database_type` is `mysql`
-      and `gitea_database_mysql_socket_enabled` is `true`.
-  when: >-
-    gitea_database_type == 'mysql' and
-    gitea_database_mysql_socket_enabled and
-    gitea_database_mysql_socket_path_host | string | length == 0
+    - name: Fail if MySQL socket host path for Gitea is missing when Unix socket is enabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_database_mysql_socket_path_host` when `gitea_database_type` is `mysql`
+          and `gitea_database_mysql_socket_enabled` is `true`.
+      when: >-
+        gitea_database_mysql_socket_enabled and
+        gitea_database_mysql_socket_path_host | string | length == 0
 
-- name: Fail if MySQL hostname is missing when Unix socket is disabled
-  ansible.builtin.fail:
-    msg: >-
-      You need to define `gitea_database_mysql_hostname` when `gitea_database_type` is `mysql`
-      and `gitea_database_mysql_socket_enabled` is `false`.
-  when: >-
-    gitea_database_type == 'mysql' and
-    not gitea_database_mysql_socket_enabled and
-    gitea_database_mysql_hostname | string | length == 0
+    - name: Fail if MySQL hostname for Gitea is missing when Unix socket is disabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_database_mysql_hostname` when `gitea_database_type` is `mysql`
+          and `gitea_database_mysql_socket_enabled` is `false`.
+      when: >-
+        not gitea_database_mysql_socket_enabled and
+        gitea_database_mysql_hostname | string | length == 0
 
-- name: Fail if required Gitea + Postgres integration settings not defined
-  ansible.builtin.fail:
-    msg: >-
-      You need to define a required configuration setting (`{{ item }}`) when `gitea_database_type` is `postgres`
-  when: "gitea_database_type == 'postgres' and lookup('vars', item, default='') | string | length == 0"
-  with_items:
-    - gitea_database_postgres_password
+- name: Run if Gitea + Postgres integration is enabled
+  when: gitea_database_type == 'postgres'
+  block:
+    - name: Fail if required Gitea + Postgres integration settings not defined
+      ansible.builtin.fail:
+        msg: >-
+          You need to define a required configuration setting (`{{ item }}`) when `gitea_database_type` is `postgres`
+      when: "lookup('vars', item, default='') | string | length == 0"
+      with_items:
+        - gitea_database_postgres_password
 
-- name: Fail if Postgres socket host path is missing when Unix socket is enabled
-  ansible.builtin.fail:
-    msg: >-
-      You need to define `gitea_database_postgres_socket_path_host` when `gitea_database_type` is `postgres`
-      and `gitea_database_postgres_socket_enabled` is `true`.
-  when: >-
-    gitea_database_type == 'postgres' and
-    gitea_database_postgres_socket_enabled and
-    gitea_database_postgres_socket_path_host | string | length == 0
+    - name: Fail if Postgres socket host path for Gitea is missing when Unix socket is enabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_database_postgres_socket_path_host` when `gitea_database_type` is `postgres`
+          and `gitea_database_postgres_socket_enabled` is `true`.
+      when: >-
+        gitea_database_postgres_socket_enabled and
+        gitea_database_postgres_socket_path_host | string | length == 0
 
-- name: Fail if Postgres hostname is missing when Unix socket is disabled
-  ansible.builtin.fail:
-    msg: >-
-      You need to define `gitea_database_postgres_hostname` when `gitea_database_type` is `postgres`
-      and `gitea_database_postgres_socket_enabled` is `false`.
-  when: >-
-    gitea_database_type == 'postgres' and
-    not gitea_database_postgres_socket_enabled and
-    gitea_database_postgres_hostname | string | length == 0
+    - name: Fail if Postgres hostname for Gitea is missing when Unix socket is disabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_database_postgres_hostname` when `gitea_database_type` is `postgres`
+          and `gitea_database_postgres_socket_enabled` is `false`.
+      when: >-
+        not gitea_database_postgres_socket_enabled and
+        gitea_database_postgres_hostname | string | length == 0
 
 - name: Fail if SMTP settings are missing (and SMTP is enabled by setting host)
   ansible.builtin.fail:
