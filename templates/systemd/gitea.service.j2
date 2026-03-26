@@ -39,10 +39,10 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       --label-file={{ gitea_base_path }}/labels \
       --mount type=bind,src={{ gitea_data_path }},dst=/var/lib/gitea \
       --mount type=bind,src={{ gitea_config_path }},dst=/etc/gitea \
-      {% if gitea_database_mysql_socket_enabled and gitea_database_mysql_socket_path_host != '' %}
+      {% if gitea_database_type == 'mysql' and gitea_database_mysql_socket_enabled and gitea_database_mysql_socket_path_host != '' %}
       --mount type=bind,src={{ gitea_database_mysql_socket_path_host }},dst={{ gitea_database_mysql_socket_path_container }} \
       {% endif %}
-      {% if gitea_database_postgres_socket_enabled and gitea_database_postgres_socket_path_host != '' %}
+      {% if gitea_database_type == 'postgres' and gitea_database_postgres_socket_enabled and gitea_database_postgres_socket_path_host != '' %}
       --mount type=bind,src={{ gitea_database_postgres_socket_path_host }},dst={{ gitea_database_postgres_socket_path_container }} \
       {% endif %}
       --tmpfs=/tmp:rw,noexec,nosuid,size={{ gitea_container_tmpfs_tmp_size }} \
