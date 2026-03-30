@@ -91,6 +91,12 @@
         not gitea_database_mysql_socket_enabled and
         gitea_database_mysql_hostname | string | length == 0
 
+    - name: Fail if MySQL SSL/TLS encryption mode for Gitea invalid
+      ansible.builtin.fail:
+        msg: >-
+          gitea_database_mysql_sslmode must be 'true', 'false', 'disable', 'skip-verify', or 'prefer'
+      when: "gitea_database_mysql_sslmode not in ['true', 'false', 'disable', 'skip-verify', 'prefer']"
+
 - name: Run if Gitea + Postgres integration is enabled
   when: gitea_database_type == 'postgres'
   block:
@@ -119,6 +125,12 @@
       when: >-
         not gitea_database_postgres_socket_enabled and
         gitea_database_postgres_hostname | string | length == 0
+
+    - name: Fail if Postgres SSL/TLS encryption mode for Gitea invalid
+      ansible.builtin.fail:
+        msg: >-
+          gitea_database_postgres_sslmode must be 'disable', 'require', 'verify-ca', or 'verify-full'
+      when: "gitea_database_postgres_sslmode not in ['disable', 'require', 'verify-ca', 'verify-full']"
 
 - name: Fail if SMTP settings are missing (and SMTP is enabled by setting host)
   ansible.builtin.fail:
