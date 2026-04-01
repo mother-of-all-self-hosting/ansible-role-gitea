@@ -257,8 +257,23 @@ gitea_cache_memcache_socket_path_container: /run-memcached
 # Specify the path to the Memcached Unix socket path on the host (bind-mount source)
 gitea_cache_memcache_socket_path_host: ""
 
+# Control if the connection to Redis is made via a Unix socket
+gitea_cache_redis_socket_enabled: true
+
+# Specify the path to the Redis Unix socket path inside the Gitea container
+gitea_cache_redis_socket_path_container: /run-redis
+
+# Specify the path to the Redis Unix socket path on the host (bind-mount source)
+gitea_cache_redis_socket_path_host: ""
+
 # Specify database host address or absolute path for Unix socket
 gitea_config_cache_host: "{{ gitea_cache_memcache_socket_path_container + '/memcached.sock' if gitea_cache_memcache_socket_enabled else '' }}"
+gitea_config_cache_host_redis: |
+  {%- if gitea_cache_redis_socket_enabled -%}
+  redis+socket://{{ gitea_cache_redis_socket_path_container + '/valkey.sock' }}?db={{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
+  {%- else -%}
+  redis://{{ gitea_redis_username }}:{{ gitea_redis_password }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
+  {%- endif -%}
 
 ########################################################################
 #                                                                      #

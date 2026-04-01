@@ -42,6 +42,9 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% if gitea_config_cache_adapter == 'memcache' and gitea_cache_memcache_socket_enabled and gitea_cache_memcache_socket_path_host != '' %}
       --mount type=bind,src={{ gitea_cache_memcache_socket_path_host }},dst={{ gitea_cache_memcache_socket_path_container }} \
       {% endif %}
+      {% if gitea_config_cache_adapter == 'redis' and gitea_cache_redis_socket_enabled and gitea_cache_redis_socket_path_host != '' %}
+      --mount type=bind,src={{ gitea_cache_redis_socket_path_host }},dst={{ gitea_cache_redis_socket_path_container }} \
+      {% endif %}
       {% if gitea_database_type == 'mysql' and gitea_database_mysql_socket_enabled and gitea_database_mysql_socket_path_host != '' %}
       --mount type=bind,src={{ gitea_database_mysql_socket_path_host }},dst={{ gitea_database_mysql_socket_path_container }} \
       {% endif %}
