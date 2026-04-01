@@ -239,6 +239,35 @@ gitea_container_cleanup_command: |
 
 ########################################################################
 #                                                                      #
+# cache                                                                #
+#                                                                      #
+########################################################################
+
+# Specify cache adapter
+# Valid values: memcache, memory, redis, redis-cluster, twoqueue
+# See: https://docs.gitea.com/administration/config-cheat-sheet#cache-cache
+gitea_config_cache_adapter: memory
+
+# Control if the connection to Memcached is made via a Unix socket
+gitea_cache_memcache_socket_enabled: true
+
+# Specify the path to the Memcached Unix socket path inside the Gitea container
+gitea_cache_memcache_socket_path_container: /run-memcached
+
+# Specify the path to the Memcached Unix socket path on the host (bind-mount source)
+gitea_cache_memcache_socket_path_host: ""
+
+# Specify database host address or absolute path for Unix socket
+gitea_config_cache_host: "{{ gitea_cache_memcache_socket_path_container + '/memcached.sock' if gitea_cache_memcache_socket_enabled else '' }}"
+
+########################################################################
+#                                                                      #
+# /cache                                                               #
+#                                                                      #
+########################################################################
+
+########################################################################
+#                                                                      #
 # database                                                             #
 #                                                                      #
 ########################################################################
@@ -307,13 +336,6 @@ gitea_environment_variables_indexer_issue_indexer_type: bleve
 # Specify issue indexer connection string
 # Available when gitea_environment_variables_indexer_issue_indexer_type is `elasticsearch` or `meilisearch`
 gitea_environment_variables_indexer_issue_indexer_conn_str: ""
-
-# Specify cache adapter
-# Valid values: memcache, memory, redis, redis-cluster, twoqueue
-# See: https://docs.gitea.com/administration/config-cheat-sheet#cache-cache
-gitea_config_cache_adapter: memory
-
-gitea_config_cache_host: ""
 
 # Enable this to send e-mail to watchers of a repository when something happens, like creating issues. Requires Mailer to be enabled.
 # See: https://docs.gitea.com/administration/config-cheat-sheet#service-service

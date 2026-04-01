@@ -132,6 +132,27 @@
           gitea_database_postgres_sslmode must be 'disable', 'require', 'verify-ca', or 'verify-full'
       when: "gitea_database_postgres_sslmode not in ['disable', 'require', 'verify-ca', 'verify-full']"
 
+- name: Run if Gitea + Memcached integration is enabled
+  when: gitea_config_cache_adapter == 'memcache'
+  block:
+    - name: Fail if Memcached socket host path for Gitea is missing when Unix socket is enabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_cache_memcache_socket_path_host` when `gitea_config_cache_adapter` is `memcache`
+          and `gitea_cache_memcache_socket_enabled` is `true`.
+      when: >-
+        gitea_cache_memcache_socket_enabled and
+        gitea_cache_memcache_socket_path_host | string | length == 0
+
+    - name: Fail if Memcached host setting for Gitea is missing when Unix socket is disabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_config_cache_host` when `gitea_config_cache_adapter` is `memcache`
+          and `gitea_cache_memcache_socket_enabled` is `false`.
+      when: >-
+        not gitea_cache_memcache_socket_enabled and
+        gitea_config_cache_host | string | length == 0
+
 - name: Fail if SMTP settings are missing (and SMTP is enabled by setting host)
   ansible.builtin.fail:
     msg: >-
