@@ -67,7 +67,9 @@ gitea_hostname: "example.com"
 
 After adjusting the hostname, make sure to adjust your DNS records to point the domain to your server.
 
-### Specify database
+### Configuring database
+
+#### Specify database
 
 It is necessary to select database used by Gitea from a MySQL compatible database, Postgres, and SQLite.
 
@@ -81,7 +83,7 @@ Set `mysql` to use a MySQL compatible database and `sqlite` to use SQLite, respe
 
 For other settings, check variables such as `gitea_database_*` on [`defaults/main.yml`](../defaults/main.yml).
 
-### Configuring connection to database server (optional)
+#### Configuring connection to the database server (optional)
 
 By default the role is configured to establish connection with the database server via the Unix socket. You can mount the Unix socket by adding the following configuration to your `vars.yml` file:
 
