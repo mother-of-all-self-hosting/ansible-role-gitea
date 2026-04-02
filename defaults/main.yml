@@ -266,11 +266,13 @@ gitea_cache_redis_socket_path_container: /run-redis
 # Specify the path to the Redis Unix socket path on the host (bind-mount source)
 gitea_cache_redis_socket_path_host: ""
 
+gitea_redis_socket_path: /valkey.sock
+
 gitea_config_cache_host: |
   {%- if gitea_config_cache_adapter == 'redis' -%}
 
   {%- if gitea_cache_redis_socket_enabled -%}
-  redis+socket://{{ gitea_cache_redis_socket_path_container + '/valkey.sock' }}?db={{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
+  redis+socket://{{ gitea_cache_redis_socket_path_container + gitea_redis_socket_path }}?db={{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
   {%- else -%}
   redis://{{ gitea_redis_username }}:{{ gitea_redis_password }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
   {%- endif -%}
