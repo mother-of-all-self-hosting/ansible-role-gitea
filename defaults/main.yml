@@ -266,13 +266,21 @@ gitea_cache_redis_socket_path_container: /run-redis
 # Specify the path to the Redis Unix socket path on the host (bind-mount source)
 gitea_cache_redis_socket_path_host: ""
 
-# Specify database host address or absolute path for Unix socket
-gitea_config_cache_host: "{{ gitea_cache_memcache_socket_path_container + '/memcached.sock' if gitea_cache_memcache_socket_enabled else '' }}"
-gitea_config_cache_host_redis: |
+gitea_config_cache_host: |
+  {%- if gitea_config_cache_adapter == 'redis' -%}
+
   {%- if gitea_cache_redis_socket_enabled -%}
   redis+socket://{{ gitea_cache_redis_socket_path_container + '/valkey.sock' }}?db={{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
   {%- else -%}
   redis://{{ gitea_redis_username }}:{{ gitea_redis_password }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
+  {%- endif -%}
+
+  {%- elif gitea_config_cache_adapter == 'redis-cluster' -%}
+  redis+cluster://{{ gitea_redis_username }}:{{ gitea_redis_password }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
+
+  {%- elif gitea_config_cache_adapter == 'memcached' -%}
+  {{ gitea_cache_memcache_socket_path_container + '/memcached.sock' if gitea_cache_memcache_socket_enabled else '' }}"
+
   {%- endif -%}
 
 ########################################################################
@@ -335,6 +343,23 @@ gitea_config_database_host_postgres: "{{ gitea_database_postgres_socket_path_con
 ########################################################################
 #                                                                      #
 # /database                                                            #
+#                                                                      #
+########################################################################
+
+########################################################################
+#                                                                      #
+# session                                                              #
+#                                                                      #
+########################################################################
+
+# Specify cache adapter
+# Valid values: memory, file, redis, db, mysql, couchbase, memcache, postgres
+# See: https://docs.gitea.com/administration/config-cheat-sheet#session-session
+gitea_config_session_provider: "{{ 'db' if gitea_database_type != '' else 'memory' }}"
+
+########################################################################
+#                                                                      #
+# /session                                                             #
 #                                                                      #
 ########################################################################
 
