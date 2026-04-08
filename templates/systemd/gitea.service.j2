@@ -32,6 +32,9 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% if girea_container_http_host_bind_port != '' %}
       -p {{ girea_container_http_host_bind_port }}:{{ gitea_container_http_port }} \
       {% endif %}
+      {% if gitea_container_metrics_host_bind_port %}
+      -p {{ gitea_container_metrics_host_bind_port }}:{{ gitea_container_metrics_port }} \
+      {% endif %}
       {% if gitea_container_ssh_host_bind_port != '' and not gitea_container_labels_traefik_tcp_enabled %}
       -p {{ gitea_container_ssh_host_bind_port }}:{{ gitea_config_server_ssh_listen_port }} \
       {% endif %}
