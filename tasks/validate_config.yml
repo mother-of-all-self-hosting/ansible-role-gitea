@@ -153,6 +153,39 @@
         not gitea_cache_memcache_socket_enabled and
         gitea_config_cache_host | string | length == 0
 
+- name: Run if Gitea + Redis integration is enabled
+  when: gitea_config_cache_adapter == 'redis'
+  block:
+    - name: Fail if both Redis hostname and socket host path for Gitea are set
+      ansible.builtin.fail:
+        msg: >-
+          You may need to define either `gitea_redis_hostname` or `gitea_cache_redis_socket_path_host` to enable Redis integration.
+      when: >-
+        gitea_redis_hostname | string | length != 0 and
+        gitea_cache_redis_socket_path_host | string | length != 0
+
+    - name: Fail if Redis hostname for Gitea is set when Unix socket is enabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_cache_redis_socket_path_host` and remove `gitea_redis_hostname` to enable Redis integration,
+          when `gitea_cache_redis_socket_enabled` is `true`.
+          Check the documentation for details.
+          You may remove the Redis service from `gitea_container_additional_networks_custom` if specified.
+      when: >-
+        gitea_redis_hostname | string | length != 0 and
+        gitea_cache_redis_socket_enabled
+
+    - name: Fail if Redis socket host path for Gitea is set when Unix socket is not enabled
+      ansible.builtin.fail:
+        msg: >-
+          You need to define `gitea_redis_hostname` and remove `gitea_cache_redis_socket_path_host` to enable Redis integration,
+          when `gitea_cache_redis_socket_enabled` is `false`.
+          Check the documentation for details.
+          You may also need to specify the Redis service to `gitea_container_additional_networks_custom` if it does not exist on the same network.
+      when: >-
+        gitea_cache_redis_socket_path_host | string | length != 0 and
+        not gitea_cache_redis_socket_enabled
+
 - name: Fail if SMTP settings are missing (and SMTP is enabled by setting host)
   ansible.builtin.fail:
     msg: >-
