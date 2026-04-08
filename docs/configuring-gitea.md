@@ -176,6 +176,12 @@ See [this section](https://docs.gitea.com/administration/config-cheat-sheet#inde
 
 If you are looking for an Ansible role for Meilisearch, you can check out [ansible-role-meilisearch](https://github.com/mother-of-all-self-hosting/ansible-role-meilisearch) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
+### Integrating with Prometheus (optional)
+
+Gitea can natively expose metrics to Prometheus.
+
+If you are looking for an integration, you can check out the MASH playbook. See [this section of the documentation on the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/gitea.md#integrating-with-prometheus-optional) for more information.
+
 ### Extending the configuration
 
 There are some additional things you may wish to configure about the service.

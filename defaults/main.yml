@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2023, 2024 Nikita Chernyi
+# SPDX-FileCopyrightText: 2023-2025 MASH project contributors
 # SPDX-FileCopyrightText: 2023-2026 Slavi Pantaleev
 # SPDX-FileCopyrightText: 2024 Sergio Durigan Junior
-# SPDX-FileCopyrightText: 2025 MASH project contributors
 # SPDX-FileCopyrightText: 2025, 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 Timofej Luitle
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -55,6 +56,11 @@ gitea_container_network_deletion_enabled: true
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
 girea_container_http_host_bind_port: ""
 
+# Specify how the metrics container publishes its HTTP port (as defined by `gitea_container_metrics_port`).
+#
+# Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
+gitea_container_metrics_host_bind_port: ""
+
 # Specify how the container publishes its SSH port (as defined by `gitea_container_ssh_port`).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
@@ -62,6 +68,9 @@ gitea_container_ssh_host_bind_port: "{{ gitea_container_ssh_port }}"
 
 # The port number in the container
 gitea_container_http_port: 3000
+
+# The port number of the metrics server in the container
+gitea_container_metrics_port: 3000
 
 # The port number in the container
 gitea_container_ssh_port: 22
@@ -87,6 +96,21 @@ gitea_container_labels_traefik_priority: 0
 gitea_container_labels_traefik_entrypoints: web-secure
 gitea_container_labels_traefik_tls: "{{ gitea_container_labels_traefik_entrypoints != 'web' }}"
 gitea_container_labels_traefik_tls_certResolver: default  # noqa var-naming
+
+# Controls if labels are added to expose the Prometheus metrics publicly.
+gitea_container_labels_traefik_metrics_enabled: "{{ gitea_config_metrics_enabled }}"
+gitea_container_labels_traefik_metrics_hostname: "{{ gitea_hostname }}"
+# The path prefix must either be `/` or not end with a slash (e.g. `/metrics`).
+gitea_container_labels_traefik_metrics_path_prefix: /metrics
+gitea_container_labels_traefik_metrics_rule: "Host(`{{ gitea_container_labels_traefik_metrics_hostname }}`){% if gitea_container_labels_traefik_metrics_path_prefix != '/' %} && PathPrefix(`{{ gitea_container_labels_traefik_metrics_path_prefix }}`){% endif %}"
+gitea_container_labels_traefik_metrics_priority: 0
+gitea_container_labels_traefik_metrics_entrypoints: "{{ gitea_container_labels_traefik_entrypoints }}"
+gitea_container_labels_traefik_metrics_middlewares: []
+gitea_container_labels_traefik_metrics_tls: "{{ gitea_container_labels_traefik_metrics_entrypoints != 'web' }}"
+gitea_container_labels_traefik_metrics_tls_certResolver: "{{ gitea_container_labels_traefik_tls_certResolver }}"  # noqa var-naming
+gitea_container_labels_traefik_metrics_middleware_basic_auth_enabled: false
+# See: https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/basicauth/
+gitea_container_labels_traefik_metrics_middleware_basic_auth_users: ""
 
 # gitea_container_labels_traefik_tcp_enabled controls whether labels to assist a Traefik reverse-proxy for SSH connections will be attached to the container.
 # See `../templates/labels.j2` for details.
@@ -391,6 +415,9 @@ gitea_config_mailer_smtp_addr: ""
 gitea_config_mailer_smtp_port: 587
 gitea_config_mailer_user: ""
 gitea_config_mailer_passwd: ""
+
+# Control if the /metrics endpoint for Prometheus is enabled
+gitea_config_metrics_enabled: false
 
 gitea_config_root_url: "{{ gitea_scheme }}://{{ gitea_hostname }}{{ gitea_path_prefix }}"
 
