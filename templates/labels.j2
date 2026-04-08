@@ -65,6 +65,11 @@ traefik.http.services.{{ gitea_identifier }}.loadbalancer.server.port={{ gitea_c
 {% endif %}
 
 {% if gitea_container_labels_traefik_tcp_enabled and gitea_container_ssh_host_bind_port %}
+########################################################################
+#                                                                      #
+# SSH                                                                  #
+#                                                                      #
+########################################################################
 
 traefik.tcp.routers.{{ gitea_identifier }}.rule={{ gitea_container_labels_traefik_tcp_rule }}
 {% if gitea_container_labels_traefik_tcp_priority | int > 0 %}
@@ -75,6 +80,11 @@ traefik.tcp.routers.{{ gitea_identifier }}.entrypoints={{ gitea_container_labels
 
 traefik.tcp.services.{{ gitea_identifier }}.loadbalancer.server.port={{ gitea_config_server_ssh_listen_port }}
 
+########################################################################
+#                                                                      #
+# /SSH                                                                 #
+#                                                                      #
+########################################################################
 {% endif %}
 
 {% for arg in gitea_container_labels_additional_labels %}
