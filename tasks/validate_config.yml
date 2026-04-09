@@ -47,6 +47,7 @@
     - { "name": "gitea_path_prefix", when: true }
     - { "name": "gitea_container_network", when: true }
     - { "name": "gitea_database_type", when: true }
+    - { "name": "gitea_container_labels_traefik_metrics_middleware_basic_auth_users", when: "{{ gitea_container_labels_traefik_metrics_middleware_basic_auth_enabled }}"}
     - "name": "gitea_container_labels_traefik_compression_middleware_name"
       when: "{{ gitea_container_labels_traefik_compression_middleware_enabled }}"
 
@@ -215,3 +216,24 @@
         msg: >-
           gitea_container_labels_traefik_path_prefix (`{{ gitea_container_labels_traefik_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/gitea`).
       when: "gitea_container_labels_traefik_path_prefix != '/' and gitea_container_labels_traefik_path_prefix[-1] == '/'"
+
+- name: Run if Traefik is enabled for Prometheus endpoint
+  when: gitea_container_labels_traefik_metrics_enabled | bool
+  block:
+    - name: Fail if Traefik settings required for Gitea metrics endpoint are not defined
+      ansible.builtin.fail:
+        msg: >-
+          You need to define a required configuration setting (`{{ item }}`).
+      when: "lookup('vars', item, default='') | string | length == 0"
+      with_items:
+        - gitea_container_labels_traefik_metrics_hostname
+        - gitea_container_labels_traefik_metrics_path_prefix
+
+    # We ensure it doesn't end with a slash, because we handle both (slash and no-slash).
+    # Knowing that `gitea_container_labels_traefik_metrics_path_prefix` does not end with a slash
+    # ensures we know how to set these routes up without having to do "does it end with a slash" checks elsewhere.
+    - name: Fail if gitea_container_labels_traefik_metrics_path_prefix ends with a slash
+      ansible.builtin.fail:
+        msg: >-
+          gitea_container_labels_traefik_metrics_path_prefix (`{{ gitea_container_labels_traefik_metrics_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/metrics`).
+      when: "gitea_container_labels_traefik_metrics_path_prefix != '/' and gitea_container_labels_traefik_metrics_path_prefix[-1] == '/'"
