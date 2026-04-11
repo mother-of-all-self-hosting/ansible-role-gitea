@@ -84,7 +84,7 @@
   register: gitea_data_path_stat
 
 # We just want to notify the user. Deleting data is too destructive.
-- name: Notify if Gitea local data remains
+- name: Inject the message about the remaining Gitea local data path
   when: gitea_data_path_stat.stat.exists | bool
   ansible.builtin.set_fact:
     devture_playbook_runtime_messages_list: |
@@ -102,7 +102,7 @@
   register: gitea_config_path_stat
 
 # We just want to notify the user. Deleting data is too destructive.
-- name: Notify if Gitea config remains
+- name: Inject the message about the remaining Gitea config path
   when: gitea_config_path_stat.stat.exists | bool
   ansible.builtin.set_fact:
     devture_playbook_runtime_messages_list: |
