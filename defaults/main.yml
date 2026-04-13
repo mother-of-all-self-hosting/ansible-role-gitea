@@ -362,8 +362,8 @@ gitea_database_postgres_socket_path_container: /run-postgres
 gitea_database_postgres_socket_path_host: ""
 
 # Specify database host address and port or absolute path for Unix socket
-gitea_config_database_host_mysql: "{{ gitea_database_mysql_socket_path_container + '/mysqld.sock' if gitea_database_mysql_socket_enabled else gitea_database_mysql_hostname + ':' + gitea_database_mysql_port }}"
-gitea_config_database_host_postgres: "{{ gitea_database_postgres_socket_path_container if gitea_database_postgres_socket_enabled else gitea_database_postgres_hostname + ':' + gitea_database_postgres_port }}"
+gitea_config_database_host_mysql: "{{ gitea_database_mysql_socket_path_container + '/mysqld.sock' if gitea_database_mysql_socket_enabled else gitea_database_mysql_hostname + ':' + gitea_database_mysql_port | string }}"
+gitea_config_database_host_postgres: "{{ gitea_database_postgres_socket_path_container if gitea_database_postgres_socket_enabled else gitea_database_postgres_hostname + ':' + gitea_database_postgres_port | string }}"
 
 ########################################################################
 #                                                                      #
