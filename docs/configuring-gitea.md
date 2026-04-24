@@ -155,7 +155,7 @@ Note that the role is configured to establish connection with the Memcached inst
 
 See [this section](https://docs.gitea.com/administration/config-cheat-sheet#cache-cache) on the official documentation for details.
 
-If you are looking for an Ansible role for [Memcached](https://memcached.org), you can check out [ansible-role-memcache](https://app.radicle.xyz/nodes/seed.radicle.garden/rad%3Az2arPcue4GZ6G6FY3gZexsJXqHyDs) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
+If you are looking for an Ansible role for [Memcached](https://memcached.org), you can check out [ansible-role-memcache](https://radicle.network/nodes/seed.radicle.garden/rad%3Az2arPcue4GZ6G6FY3gZexsJXqHyDs) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
 ### Configuring issue indexer (optional)
 
