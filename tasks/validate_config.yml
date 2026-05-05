@@ -34,6 +34,7 @@
     - { "old": "gitea_database_password", "new": "<Replace with gitea_database_mysql_password or gitea_database_postgres_password>" }
     - { "old": "gitea_container_additional_environment_variables", "new": "gitea_environment_variables_additional_variables" }
     - { "old": "gitea_http_header_content_permission_policy", "new": "gitea_http_header_permissions_policy" }
+    - { "old": "gitea_container_image_force_pull", "new": "<removed> (the new community.docker.docker_image_pull module handles this natively)" }
 
 - name: Fail if required Gitea settings not defined
   ansible.builtin.fail:

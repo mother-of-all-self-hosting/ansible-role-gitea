@@ -37,7 +37,6 @@ gitea_container_image_tag: "{{ gitea_version }}-rootless"
 gitea_container_image_registry_prefix: "{{ gitea_container_image_registry_prefix_upstream }}"
 gitea_container_image_registry_prefix_upstream: "{{ gitea_container_image_registry_prefix_upstream_default }}"
 gitea_container_image_registry_prefix_upstream_default: docker.io/
-gitea_container_image_force_pull: "{{ gitea_container_image.endswith(':latest') }}"
 
 gitea_container_image_self_build: false
 gitea_container_image_self_build_name: "go-gitea/gitea:{{ gitea_container_image_self_build_repo_version }}"
