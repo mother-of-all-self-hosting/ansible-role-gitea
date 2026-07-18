@@ -17,6 +17,7 @@
     - { "old": "gitea_http_bind_port", "new": "gitea_container_http_host_bind_port" }
     - { "old": "gitea_ssh_port", "new": "gitea_container_ssh_port" }
     - { "old": "gitea_ssh_bind_port", "new": "gitea_container_ssh_host_bind_port" }
+    - { "old": "girea_container_http_host_bind_port", "new": "gitea_container_http_host_bind_port" }
     - { "old": "gitea_config_server_ssh_port", "new": "gitea_container_ssh_port" }
     - { "old": "gitea_systemd_required_systemd_services_list", "new": "gitea_systemd_required_services_list" }
     - { "old": "gitea_systemd_required_systemd_services_list_default", "new": "gitea_systemd_required_services_list_default" }

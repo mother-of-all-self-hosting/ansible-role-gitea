@@ -53,7 +53,7 @@ gitea_container_network_deletion_enabled: true
 # Specify how the container publishes its HTTP port (as defined by `gitea_container_http_port`).
 #
 # Takes an "<ip>:<port>" or "<port>" value (e.g. "127.0.0.1:2586"), or empty string to not expose.
-girea_container_http_host_bind_port: ""
+gitea_container_http_host_bind_port: ""
 
 # Specify how the metrics container publishes its HTTP port (as defined by `gitea_container_metrics_port`).
 #
