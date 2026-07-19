@@ -15,6 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 This role supports [Molecule](https://docs.ansible.com/projects/molecule/), an Ansible testing framework designed for developing and testing Ansible collections, playbooks, and roles.
 
+The scenarios are based on the ones at [ansible-role-forgejo](https://github.com/mother-of-all-self-hosting/ansible-role-forgejo/tree/main/molecule).
+
 ## Prerequisites
 
 To utilize Molecule you need to prepare several requirements:
