@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+# SPDX-FileCopyrightText: 2026 spatterlight
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+- name: Verify Gitea systemd service
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Wait for Gitea service to become active (up to 180s)
+      ansible.builtin.systemd:
+        name: gitea.service
+      register: gitea_service
+      until: gitea_service.status.ActiveState == 'active'
+      retries: 36
+      delay: 5
+
+    - name: Assert Gitea service is active
+      ansible.builtin.assert:
+        that: gitea_service.status.ActiveState == 'active'
+        fail_msg: "gitea.service not active ({{ gitea_service.status.ActiveState }})"
+        success_msg: "gitea.service is active"
+
+    - name: Retrieve Gitea service log for debugging
+      when: gitea_debug_service_enabled | bool
+      ansible.builtin.command:
+        cmd: journalctl -xeu gitea.service
+      changed_when: false
+
+    - name: Wait for Gitea HTTP endpoint to respond (up to 10m)
+      ansible.builtin.uri:
+        url: "http://localhost:3000/"
+        method: GET
+        status_code: [200, 302]
+        follow_redirects: none
+      register: gitea_endpoint
+      until: gitea_endpoint.status in [200, 302]
+      retries: 120
+      delay: 5
+
+    - name: Assert Gitea HTTP endpoint responds
+      ansible.builtin.assert:
+        that: gitea_endpoint.status in [200, 302]
+        fail_msg: "Gitea did not respond as expected ({{ gitea_endpoint.status | default('no response') }})"
+        success_msg: "Gitea responded with {{ gitea_endpoint.status }}"
+
+    - name: Show Gitea systemd service status summary
+      ansible.builtin.debug:
+        msg:
+          - "Gitea systemd: {{ gitea_service.status.ActiveState }}"
+          - "Gitea HTTP: {{ gitea_endpoint.status }}"
