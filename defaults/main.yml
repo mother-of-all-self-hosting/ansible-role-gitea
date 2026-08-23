@@ -17,7 +17,7 @@ gitea_base_path: "/{{ gitea_identifier }}"
 gitea_data_path: "{{ gitea_base_path }}/data"
 gitea_config_path: "{{ gitea_base_path }}/config"
 
-# renovate: datasource=docker depName=gitea/gitea
+# renovate: datasource=docker depName=gitea/gitea versioning=semver
 gitea_version: 1.27.2
 
 gitea_uid: ""
