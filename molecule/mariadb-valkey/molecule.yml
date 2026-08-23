@@ -12,7 +12,7 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: gitea-${MOLECULE_DISTRO:-ubuntu2604}-default
+  - name: gitea-${MOLECULE_DISTRO:-ubuntu2604}-mariadb-valkey
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2604}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:
