@@ -39,6 +39,13 @@ provisioner:
         gitea_container_labels_traefik_enabled: false
         gitea_container_http_host_bind_port: 3000
         gitea_database_type: sqlite
+
+        # Without this, Gitea comes up on its web installation wizard, where
+        # no API is routed and every page merely renders the install form.
+        # Locking the installation puts Gitea into the state a real instance
+        # is in after setup, so that the verification exercises Gitea itself.
+        gitea_environment_variables_additional_variables: |
+          GITEA__security__INSTALL_LOCK=true
   env:
     # Workaround for https://github.com/ansible/molecule/issues/4391
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/..:/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles:~/.ansible/roles
