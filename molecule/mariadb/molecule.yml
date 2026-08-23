@@ -38,9 +38,9 @@ provisioner:
         gitea_hostname: localhost
         gitea_container_labels_traefik_enabled: false
         gitea_container_http_host_bind_port: 3000
-        gitea_database_type: mysql
 
         # Variables required for Gitea to connect to the MariaDB database (via Unix socket)
+        gitea_database_type: mysql
         gitea_database_mysql_username: my_database_username
         gitea_database_mysql_password: my_database_password
         gitea_database_name: gitea

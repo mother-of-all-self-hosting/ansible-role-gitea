@@ -39,9 +39,9 @@ provisioner:
         gitea_container_labels_traefik_enabled: false
         gitea_container_http_host_bind_port: 3000
         gitea_database_type: sqlite
-        gitea_config_cache_adapter: redis
 
         # Variables required for Gitea to connect to the Valkey data-store
+        gitea_config_cache_adapter: redis
         gitea_cache_redis_socket_path_host: "{{ valkey_run_path }}"
         gitea_systemd_required_services_list_custom:
           - "{{ valkey_identifier }}.service"
