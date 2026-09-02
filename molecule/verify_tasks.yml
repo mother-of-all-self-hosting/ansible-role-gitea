@@ -1,0 +1,173 @@
+# SPDX-FileCopyrightText: 2026 Slavi Pantaleev
+# SPDX-FileCopyrightText: 2026 spatterlight
+# SPDX-FileCopyrightText: 2026 Suguru Hirahara
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+---
+# Role defaults are not in scope here, but the version that Renovate bumps
+# lives in them and is what the API is checked against below.
+- name: Load the Gitea role defaults
+  ansible.builtin.include_vars:
+    file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yml"
+    name: gitea_defaults
+
+- name: Wait for Gitea service to become active (up to 180s)
+  ansible.builtin.systemd:
+    name: gitea.service
+  register: gitea_service
+  until: gitea_service.status.ActiveState == 'active'
+  retries: 36
+  delay: 5
+
+- name: Assert Gitea service is active
+  ansible.builtin.assert:
+    that: gitea_service.status.ActiveState == 'active'
+    fail_msg: "gitea.service not active ({{ gitea_service.status.ActiveState }})"
+    success_msg: "gitea.service is active"
+
+- name: Retrieve Gitea service log for debugging
+  when: gitea_debug_service_enabled | bool
+  ansible.builtin.command:
+    cmd: journalctl -xeu gitea.service
+  changed_when: false
+
+# An unconfigured Gitea serves nothing but its installation wizard: every
+# path answers with 200 and renders the install form, while the API is not
+# routed at all and answers with 404. This endpoint answering is therefore
+# what tells an installed Gitea apart from a merely running one. It also
+# reports the version of the running Gitea, which is asserted against the
+# version this role pins below.
+- name: Wait for the Gitea API to report its version (up to 10m)
+  ansible.builtin.uri:
+    url: "http://localhost:3000/api/v1/version"
+    method: GET
+    return_content: true
+  register: gitea_api_version
+  until: gitea_api_version.status == 200
+  retries: 120
+  delay: 5
+
+# Release builds report a plain version (`1.27.2`), while development
+# builds append build metadata (`1.27.2+dev-123-gabcdef`) that is not part
+# of what the role pins.
+- name: Assert the running Gitea is the version this role installs
+  ansible.builtin.assert:
+    that: gitea_api_version.json.version.split('+') | first == gitea_defaults.gitea_version
+    fail_msg: "Gitea reports {{ gitea_api_version.json.version }}, expected {{ gitea_defaults.gitea_version }}"
+    success_msg: "Gitea reports {{ gitea_api_version.json.version }}"
+
+# Gitea pings its data-stores on demand here, so this exercises the
+# database and the cache adapter that the scenario wired up, rather than
+# just the fact that the container came up. Beware that the top-level
+# status reads `pass` even on an uninstalled Gitea, which reports no checks
+# at all - the individual checks below are what carry the meaning.
+- name: Query the Gitea health endpoint
+  ansible.builtin.uri:
+    url: "http://localhost:3000/api/healthz"
+    method: GET
+    return_content: true
+  register: gitea_healthz
+
+- name: Assert Gitea reports itself and its data-stores as healthy
+  ansible.builtin.assert:
+    that:
+      - gitea_healthz.json.status == 'pass'
+      - gitea_healthz.json.checks['database:ping'] | map(attribute='status') | unique | list == ['pass']
+      - gitea_healthz.json.checks['cache:ping'] | map(attribute='status') | unique | list == ['pass']
+    fail_msg: "Gitea is not healthy: {{ gitea_healthz.json }}"
+    success_msg: "Gitea, its database and its cache are healthy"
+
+- name: Retrieve the Gitea web interface
+  ansible.builtin.uri:
+    url: "http://localhost:3000/"
+    method: GET
+    status_code: [200]
+    return_content: true
+  register: gitea_endpoint
+
+# The installation wizard answers with 200 and mentions Gitea just as much,
+# so what is looked for here is the sign-in affordance that only a set-up
+# instance offers, and the absence of the wizard itself.
+- name: Assert the Gitea web interface is served
+  ansible.builtin.assert:
+    that:
+      - "'Sign In' in gitea_endpoint.content"
+      - "'Installation' not in gitea_endpoint.content"
+    fail_msg: "The Gitea web interface did not render as expected"
+    success_msg: "The Gitea web interface is served"
+
+# Everything above only reads. Creating a user through the Gitea CLI and a
+# repository through the API writes to the database that the scenario wired
+# up and to Gitea's data directory, and reads both back through the API.
+#
+# Creating the user is allowed to fail, because verifying an instance that
+# already has it is not a failure - the read-back below is the assertion.
+- name: Create a Gitea user
+  ansible.builtin.command:
+    cmd: >-
+      docker exec {{ gitea_defaults.gitea_identifier }}
+      gitea admin user create
+      --username {{ gitea_verify_username }}
+      --password {{ gitea_verify_password }}
+      --email {{ gitea_verify_username }}@example.com
+      --must-change-password=false
+  register: gitea_user_create
+  changed_when: gitea_user_create.rc == 0
+  failed_when: false
+
+- name: Read the Gitea user back through the API
+  ansible.builtin.uri:
+    url: "http://localhost:3000/api/v1/users/{{ gitea_verify_username }}"
+    method: GET
+    return_content: true
+  register: gitea_user
+
+- name: Assert the Gitea user exists
+  ansible.builtin.assert:
+    that: gitea_user.json.login == gitea_verify_username
+    fail_msg: "Gitea does not serve the user that was created: {{ gitea_user_create.stdout | default('') }} {{ gitea_user_create.stderr | default('') }}"
+    success_msg: "Gitea serves the user that was created"
+
+# As with the user, a repository left behind by an earlier verification is
+# not a failure, so the conflict that Gitea answers with is accepted and
+# the read-back below is left to do the asserting.
+- name: Create a Gitea repository through the API
+  ansible.builtin.uri:
+    url: "http://localhost:3000/api/v1/user/repos"
+    method: POST
+    url_username: "{{ gitea_verify_username }}"
+    url_password: "{{ gitea_verify_password }}"
+    force_basic_auth: true
+    body_format: json
+    body:
+      name: "{{ gitea_verify_repository }}"
+      auto_init: true
+    status_code: [201, 409]
+
+- name: Read the Gitea repository back through the API
+  ansible.builtin.uri:
+    url: "http://localhost:3000/api/v1/repos/{{ gitea_verify_username }}/{{ gitea_verify_repository }}"
+    method: GET
+    return_content: true
+  register: gitea_repository
+
+# `auto_init` asked Gitea to lay down an initial commit, so a repository
+# that reads back as non-empty means Git itself worked, not just that a
+# database row was written.
+- name: Assert the Gitea repository was created and initialized
+  ansible.builtin.assert:
+    that:
+      - gitea_repository.json.full_name == gitea_verify_username ~ '/' ~ gitea_verify_repository
+      - not gitea_repository.json.empty
+    fail_msg: "Gitea did not serve an initialized repository: {{ gitea_repository.json }}"
+    success_msg: "Gitea created and serves an initialized repository"
+
+- name: Show Gitea verification summary
+  ansible.builtin.debug:
+    msg:
+      - "Gitea systemd: {{ gitea_service.status.ActiveState }}"
+      - "Gitea version: {{ gitea_api_version.json.version }}"
+      - "Gitea health: {{ gitea_healthz.json.checks }}"
+      - "Gitea web interface: {{ gitea_endpoint.status }}"
+      - "Gitea repository: {{ gitea_repository.json.full_name }} ({{ gitea_repository.json.default_branch }})"
