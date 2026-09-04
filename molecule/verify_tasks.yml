@@ -164,7 +164,7 @@
     fail_msg: "Gitea did not serve an initialized repository: {{ gitea_repository.json }}"
     success_msg: "Gitea created and serves an initialized repository"
 
-- name: Show Gitea verification summary
+- name: Show the Gitea verification summary
   ansible.builtin.debug:
     msg:
       - "Gitea systemd: {{ gitea_service.status.ActiveState }}"
