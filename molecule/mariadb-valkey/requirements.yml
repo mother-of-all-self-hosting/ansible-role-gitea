@@ -8,7 +8,7 @@ roles:
     version: v12.3.3-0
     name: ansible-role-mariadb
   - src: https://github.com/mother-of-all-self-hosting/ansible-role-valkey
-    version: v9.1.2-0
+    version: v9.1.2-1
     name: ansible-role-valkey
   - src: https://github.com/devture/com.devture.ansible.role.playbook_help
     version: main
