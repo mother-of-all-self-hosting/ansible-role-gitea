@@ -36,7 +36,7 @@
 - name: Retrieve the Gitea systemd service log for debugging
   when: gitea_debug_service_enabled | bool
   ansible.builtin.command:
-    cmd: journalctl -xeu gitea.service
+    cmd: journalctl --no-pager --output=cat --unit=gitea.service
   changed_when: false
 
 # An unconfigured Gitea serves nothing but its installation wizard: every
