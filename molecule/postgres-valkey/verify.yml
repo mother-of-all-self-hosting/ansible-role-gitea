@@ -15,6 +15,11 @@
     gitea_verify_password: Molecule-Verify-P4ss
     gitea_verify_repository: molecule-verify
 
+    gitea_verify_units:
+      - gitea.service
+      - postgres.service
+      - valkey.service
+
   tasks:
     - name: Verify that Gitea works
       block:
