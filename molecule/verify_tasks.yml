@@ -73,21 +73,27 @@
 # just the fact that the container came up. Beware that the top-level
 # status reads `pass` even on an uninstalled Gitea, which reports no checks
 # at all - the individual checks below are what carry the meaning.
-- name: Query the Gitea health endpoint
+- name: Wait for Gitea to report itself healthy (up to 180s)
   ansible.builtin.uri:
     url: "http://localhost:3000/api/healthz"
     method: GET
     return_content: true
-  register: gitea_healthz
+  register: gitea_health
+  until: gitea_health.status == 200 and gitea_health.json.status == 'pass'
+  retries: 36
+  delay: 5
+  # So that giving up is reported by the assertion below rather than as a
+  # wall of systemd unit properties.
+  failed_when: false
 
 - name: Assert Gitea reports itself and its data-stores as healthy
   ansible.builtin.assert:
     that:
-      - gitea_healthz.json.status == 'pass'
-      - gitea_healthz.json.checks['database:ping'] | map(attribute='status') | unique | list == ['pass']
-      - gitea_healthz.json.checks['cache:ping'] | map(attribute='status') | unique | list == ['pass']
-    fail_msg: "Gitea is not healthy: {{ gitea_healthz.json }}"
-    success_msg: "Gitea, its database and its cache are healthy"
+      - gitea_health.json.status == 'pass'
+      - gitea_health.json.checks['database:ping'] | map(attribute='status') | unique | list == ['pass']
+      - gitea_health.json.checks['cache:ping'] | map(attribute='status') | unique | list == ['pass']
+    fail_msg: "Gitea did not report itself healthy: {{ gitea_health.json | default('no response') }}"
+    success_msg: "Gitea reports itself, its database and its cache healthy"
 
 - name: Retrieve the Gitea web interface
   ansible.builtin.uri:
@@ -179,6 +185,6 @@
     msg:
       - "Gitea systemd: {% for unit, state in gitea_verify_units | zip(gitea_services.results | map(attribute='status.ActiveState')) %}{{ unit }} ({{ state }}){% if not loop.last %}, {% endif %}{% endfor %}"
       - "Gitea version: {{ gitea_api_version.json.version }}"
-      - "Gitea health: {{ gitea_healthz.json.checks }}"
+      - "Gitea health: {{ gitea_health.json.checks }}"
       - "Gitea web interface: {{ gitea_endpoint.status }}"
       - "Gitea repository: {{ gitea_repository.json.full_name }} ({{ gitea_repository.json.default_branch }})"
