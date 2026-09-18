@@ -170,6 +170,12 @@ gitea_container_extra_arguments: "{{ gitea_container_extra_arguments_auto + gite
 gitea_container_extra_arguments_auto: []
 gitea_container_extra_arguments_custom: []
 
+# A list of extra arguments to pass to the process inside the container
+# Example: ['--SOME_ARGUMENT']
+gitea_process_extra_arguments: "{{ gitea_process_extra_arguments_auto + gitea_process_extra_arguments_custom }}"
+gitea_process_extra_arguments_auto: []
+gitea_process_extra_arguments_custom: []
+
 # Specifies the value of the `X-XSS-Protection` header
 # Stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
 #

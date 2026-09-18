@@ -58,7 +58,10 @@ ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} create \
       {% for arg in gitea_container_extra_arguments %}
       {{ arg }} \
       {% endfor %}
-      {{ gitea_container_image_self_build_name if gitea_container_image_self_build else gitea_container_image }}
+      {{ gitea_container_image_self_build_name if gitea_container_image_self_build else gitea_container_image }} \
+      {% for arg in gitea_process_extra_arguments %}
+      {{ arg }} \
+      {% endfor %}
 
 {% for network in gitea_container_additional_networks %}
 ExecStartPre={{ devture_systemd_docker_base_host_command_docker }} network connect {{ network }} {{ gitea_identifier }}
