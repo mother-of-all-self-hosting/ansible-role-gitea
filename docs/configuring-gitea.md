@@ -153,7 +153,7 @@ gitea_config_cache_host: CONNECTION_STRING_HERE
 
 Note that the role is configured to establish connection with the Memcached instance via the Unix socket by default.
 
-See [this section](https://docs.gitea.com/administration/config-cheat-sheet#cache-cache) on the official documentation for details.
+Refer to [this section](https://docs.gitea.com/administration/config-cheat-sheet#cache-cache) on the official documentation for details.
 
 If you are looking for an Ansible role for [Memcached](https://memcached.org), you can check out [ansible-role-memcache](https://radicle.network/nodes/iris.radicle.network/rad%3Az2arPcue4GZ6G6FY3gZexsJXqHyDs) maintained by the [Mother-of-All-Self-Hosting (MASH)](https://github.com/mother-of-all-self-hosting) team.
 
@@ -169,7 +169,7 @@ gitea_environment_variables_indexer_issue_indexer_type: ISSUE_INDEXER_VALUE_HERE
 gitea_environment_variables_indexer_issue_indexer_conn_str: YOUR_ISSUE_INDEXER_CONNECTION_STRING_HERE
 ```
 
-See [this section](https://docs.gitea.com/administration/config-cheat-sheet#indexer-indexer) on the official documentation for details.
+Refer to [this section](https://docs.gitea.com/administration/config-cheat-sheet#indexer-indexer) on the official documentation for details.
 
 >[!NOTE]
 > The default Admin API Key is sufficient for using Meilisearch on a Gitea instance. It is [not recommended](https://www.meilisearch.com/docs/learn/security/basic_security) to use the master key for operations anything but managing other API keys.
@@ -180,7 +180,7 @@ If you are looking for an Ansible role for Meilisearch, you can check out [ansib
 
 Gitea can natively expose metrics to Prometheus.
 
-If you are looking for an integration, you can check out the MASH playbook. See [this section of the documentation on the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/gitea.md#integrating-with-prometheus-optional) for more information.
+If you are looking for an integration, you can check out the MASH playbook. Refer to [this section of the documentation on the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/gitea.md#integrating-with-prometheus-optional) for more information.
 
 ### Extending the configuration
 
