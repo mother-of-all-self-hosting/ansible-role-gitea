@@ -71,7 +71,7 @@ After adjusting the hostname, make sure to adjust your DNS records to point the 
 
 #### Specify database
 
-It is necessary to select database used by Gitea from a MySQL compatible database, Postgres, and SQLite.
+Gitea can use either a MySQL compatible database, Postgres, or SQLite, and you need to choose one.
 
 To use Postgres, add the following configuration to your `vars.yml` file:
 
