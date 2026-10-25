@@ -180,7 +180,7 @@ If you are looking for an Ansible role for Meilisearch, you can check out [ansib
 
 Gitea can natively expose metrics to Prometheus.
 
-If you are looking for an integration, you can check out the MASH playbook. Refer to [this section of the documentation on the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/gitea.md#integrating-with-prometheus-optional) for more information.
+If you are looking for an integration, you can check out the MASH playbook. Refer to [this section of the documentation on the playbook](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/components/gitea/README.md#integrating-with-prometheus-optional) for more information.
 
 ### Extending the configuration
 
