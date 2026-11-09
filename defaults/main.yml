@@ -302,11 +302,11 @@ gitea_config_cache_host: |
   {%- if gitea_cache_redis_socket_enabled -%}
   redis+socket://{{ gitea_cache_redis_socket_path_container + gitea_redis_socket_path }}?db={{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
   {%- else -%}
-  redis://{{ gitea_redis_username }}:{{ gitea_redis_password }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
+  redis://{{ gitea_redis_username | urlencode | replace('/', '%2F') }}:{{ gitea_redis_password | urlencode | replace('/', '%2F') }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
   {%- endif -%}
 
   {%- elif gitea_config_cache_adapter == 'redis-cluster' -%}
-  redis+cluster://{{ gitea_redis_username }}:{{ gitea_redis_password }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
+  redis+cluster://{{ gitea_redis_username | urlencode | replace('/', '%2F') }}:{{ gitea_redis_password | urlencode | replace('/', '%2F') }}@{{ gitea_redis_hostname }}:{{ gitea_redis_port }}/{{ gitea_redis_database }}?pool_size=100&idle_timeout=180s
 
   {%- elif gitea_config_cache_adapter == 'memcached' -%}
   {{ gitea_cache_memcache_socket_path_container + '/memcached.sock' if gitea_cache_memcache_socket_enabled else '' }}"
