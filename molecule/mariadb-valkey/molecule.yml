@@ -57,8 +57,8 @@ provisioner:
 
         # Variables required for Gitea to connect to the MariaDB database (via Unix socket)
         gitea_database_type: mysql
-        gitea_database_mysql_username: my_database_username
-        gitea_database_mysql_password: my_database_password
+        gitea_database_mysql_username: /#@my_database_username?%
+        gitea_database_mysql_password: /#@my_database_password?%
         gitea_database_name: gitea
         gitea_database_mysql_socket_enabled: true
         gitea_database_mysql_socket_path_host: "{{ mariadb_run_path }}"

@@ -57,8 +57,8 @@ provisioner:
 
         # Variables required for Gitea to connect to the Postgres database (via Unix socket)
         gitea_database_type: postgres
-        gitea_database_postgres_username: my_database_username
-        gitea_database_postgres_password: my_database_password
+        gitea_database_postgres_username: /#@my_database_username?%
+        gitea_database_postgres_password: /#@my_database_password?%
         gitea_database_name: gitea
         gitea_database_postgres_socket_enabled: true
         gitea_database_postgres_socket_path_host: "{{ postgres_run_path }}"
