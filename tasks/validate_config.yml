@@ -45,9 +45,6 @@
   with_items:
     - gitea_uid
     - gitea_gid
-    - gitea_hostname
-    - gitea_path_prefix
-    - gitea_container_network
     - gitea_database_type
 
 - name: Fail if Gitea cache adapter type is invalid
